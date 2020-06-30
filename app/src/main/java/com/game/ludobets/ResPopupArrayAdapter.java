@@ -96,7 +96,7 @@ public class ResPopupArrayAdapter extends ArrayAdapter<String> {
                         });
                         Toast.makeText(v.getContext(),"Accepted. You can Start the Match Now",Toast.LENGTH_SHORT).show();
                         MainActivity.getInstance().DBdata(current_user_name);
-                        notifyDataSetChanged();
+//                        notifyDataSetChanged();
 
                     }
                 });
@@ -110,7 +110,7 @@ public class ResPopupArrayAdapter extends ArrayAdapter<String> {
                 AlertDialog alertDialog=acceptDialog.create();
                 alertDialog.show();
                 bet_response.dismiss();
-                notifyDataSetChanged();
+//                notifyDataSetChanged();
             }
         });
         return rowView;

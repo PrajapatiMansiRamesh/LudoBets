@@ -71,7 +71,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
             buttonPlay.setVisibility(View.GONE);
             buttonView.setVisibility(View.VISIBLE);
             buttonDelete.setVisibility(View.VISIBLE);
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
         } else {
             if(status.startsWith("REQUESTED") && s !=current_user_name)
             {
@@ -81,14 +81,14 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 buttonPlay.setBackgroundResource(R.drawable.requestbtn);
                 buttonPlay.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
+//                notifyDataSetChanged();
             }
             else if(status.startsWith("NA") && s !=current_user_name)
             {
                 buttonView.setVisibility(View.GONE);
                 buttonDelete.setVisibility(View.GONE);
                 buttonPlay.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
+//                notifyDataSetChanged();
             }
         }
         if(status.startsWith("ACCEPTED"))
@@ -99,7 +99,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
             buttonPlay.setTextColor(Color.WHITE);
             buttonPlay.setBackgroundResource(R.drawable.startbtn);
             buttonPlay.setVisibility(View.VISIBLE);
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
         }
 
         buttonPlay.setOnClickListener(new View.OnClickListener() {
@@ -113,12 +113,12 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                             intent.putExtra("current_user",current_user_name);
                             intent.putExtra("current_user_id",userid);
                             context.startActivity(intent);
-                             notifyDataSetChanged();
+//                             notifyDataSetChanged();
                 }
                 else if(button_status=="REQUESTED")
                 {
                     Toast.makeText(context,current_user_name+" You Already Requested",Toast.LENGTH_SHORT).show();
-                    notifyDataSetChanged();
+//                    notifyDataSetChanged();
                 }
                 else
                {
@@ -138,7 +138,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                        buttonPlay.setBackgroundResource(R.drawable.requestbtn);
                                        buttonPlay.setVisibility(View.VISIBLE);
                                        buttonDelete.setVisibility(View.VISIBLE);
-                                       notifyDataSetChanged();
+//                                       notifyDataSetChanged();
                                    }
                                }
                            }
@@ -178,7 +178,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                 {
                                     Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
                                     MainActivity.getInstance().DBdata(current_user_name);
-                                    notifyDataSetChanged();
+//                                    notifyDataSetChanged();
                                 }
                                 else {
                                 }
