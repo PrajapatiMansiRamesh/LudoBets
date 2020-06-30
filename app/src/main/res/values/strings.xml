@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Ludo Bets</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawe_close">Close</string>
+    <string name="Rs"> <font size="30">\u20B9</font></string>
+</resources>

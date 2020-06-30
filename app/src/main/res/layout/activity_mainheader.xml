@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="190dp"
+    android:background="@drawable/nav_background"
+    tools:context=".MainheaderActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="16dp"
+        android:paddingBottom="16dp">
+<!--        <ImageView-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:src="@drawable/user_icon"-->
+<!--            android:layout_marginBottom="16dp"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/profilename"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Your Name"-->
+<!--            android:textColor="#FFF"-->
+<!--            android:textSize="30sp"-->
+<!--            android:fontFamily="sans-serif-condensed"-->
+<!--            />-->
+<!--        <TextView-->
+<!--            android:id="@+id/profileemail"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Your Email address"-->
+<!--            android:textColor="#FFF"-->
+<!--            android:textSize="16sp"-->
+<!--            android:fontFamily="sans-serif" />-->
+
+
+<!--                <TextView-->
+<!--                    android:id="@+id/profilename"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Your Name"-->
+<!--                    android:textColor="#fff"-->
+<!--                    android:textSize="30sp"-->
+<!--                    android:fontFamily="sans-serif-condensed"-->
+<!--                    />-->
+        <TextView
+            android:id="@+id/this_is_id_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:typeface="serif"
+            android:textColor="@color/white"
+            android:text="@string/app_name" />
+
+        <TextView
+                    android:id="@+id/currentuser"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="1"
+                    android:textColor="#fff"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif" />
+
+    </LinearLayout>
+
+</RelativeLayout>

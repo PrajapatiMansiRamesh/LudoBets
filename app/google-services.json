@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "851763071082",
+    "firebase_url": "https://ludo-87f82.firebaseio.com",
+    "project_id": "ludo-87f82",
+    "storage_bucket": "ludo-87f82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851763071082:android:2ca911146c28f1442c6213",
+        "android_client_info": {
+          "package_name": "com.game.ludobets"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851763071082-59f8derc8eeuf5u3plp05063qu19b4nf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA48wdzaN3i2RjhzNRBrwQmlo2AOD84La4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851763071082-59f8derc8eeuf5u3plp05063qu19b4nf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

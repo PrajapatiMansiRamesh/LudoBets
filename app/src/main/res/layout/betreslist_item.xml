@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:paddingTop="60dp"
+        android:paddingBottom="40dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/response_bet"
+        android:paddingTop="30dp"
+        android:paddingBottom="10dp"
+        android:textSize="17dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:gravity="center_horizontal"
+        />
+    <Button
+        android:id="@+id/accept_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ACCEPT"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/black"
+        android:background="@color/primary_darker"
+        />
+    </LinearLayout>
+</RelativeLayout>

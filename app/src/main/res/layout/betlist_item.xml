@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/bet_item"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true"
+            android:textColor="#000"
+            android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/view_bet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="1dp"
+        android:layout_toRightOf="@id/bet_item"
+        android:background="@drawable/viewbtn"
+        android:text="VIEW"
+        style="?android:attr/borderlessButtonStyle"
+        android:onClick="Show_popup"
+        android:visibility="gone"
+        />
+<!--    <Button-->
+<!--        android:id="@+id/request_bet"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="2dp"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:layout_marginRight="2dp"-->
+<!--        android:layout_toLeftOf="@id/bet_delete"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:background="@drawable/requestbtn"-->
+<!--        android:text="REQUEST"-->
+<!--        />-->
+    <Button
+        android:id="@+id/play_bet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/bet_item"
+        android:background="@drawable/play_btn"
+        android:text="PLAY"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/bet_delete"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="9dp"
+
+        android:background="@drawable/ic_action_cancel"
+        android:onClick="Delete_btn" />
+    <!--    </RelativeLayout>-->
+    </RelativeLayout>

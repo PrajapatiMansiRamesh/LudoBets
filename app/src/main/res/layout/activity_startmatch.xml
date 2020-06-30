@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".StartmatchActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+<RadioButton
+        android:id="@+id/cancelbtn"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Cancel Game/गेम रद्द करें"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp" />
+<TextView
+    android:id="@+id/cancelview"
+    android:layout_marginTop="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="20dp"/>
+    <TextView
+    android:id="@+id/match_title"
+    android:layout_marginTop="60dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="30dp"
+    android:layout_marginBottom="30dp"
+    android:gravity="center_horizontal"
+    android:textColor="@color/black" />
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+<Button
+    android:id="@+id/msg"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:layout_width="0dp"
+    android:background="@drawable/msgcallbtn"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:layout_marginLeft="30dp"
+    android:text="  WHATSAPP"
+    android:drawableLeft="@drawable/ic_message"
+    android:textSize="16sp" />
+    <Button
+        android:id="@+id/call"
+        android:layout_height="wrap_content"
+        android:background="@drawable/msgcallbtn"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="20dp"
+        android:text="  CALL"
+        android:drawableLeft="@drawable/ic_call"
+        android:textSize="16sp" />
+</LinearLayout>
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp">
+<TextView
+        android:id="@+id/match_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:background="@color/iron"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black" />
+<Button
+    android:id="@+id/copycode"
+    android:layout_width="30dp"
+    android:layout_margin="10dp"
+    android:layout_height="30dp"
+    android:background="@drawable/ic_content_copy"
+    android:visibility="gone"
+    />
+</RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2" >
+    <Button
+        android:id="@+id/nobtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No"
+        android:textColor="@color/white"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@color/maroon"
+        android:visibility="gone"/>
+    <Button
+        android:id="@+id/yesbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="20dp"
+        android:text="Yes"
+        android:textColor="@color/white"
+        android:background="@color/blue"
+        android:visibility="gone"/>
+    </TableRow>
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2" >
+            <Button
+                android:id="@+id/Cnobtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:textColor="@color/white"
+                android:layout_margin="20dp"
+                android:layout_weight="1"
+                android:background="@color/maroon"
+                android:visibility="gone"/>
+            <Button
+                android:id="@+id/Cyesbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="20dp"
+                android:text="Yes"
+                android:textColor="@color/white"
+                android:background="@color/blue"
+                android:visibility="gone"/>
+        </TableRow>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/entercode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/code"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:inputType="number"
+            android:background="@drawable/border_style"
+            android:layout_gravity="center_horizontal"
+            android:hint="Enter Room Code"
+            android:textColor="#000"
+            android:visibility="gone">
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/set_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/code"
+            android:background="@drawable/my_button"
+            android:text="SET"
+            android:visibility="invisible"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:padding="10dp"
+        android:background="@color/orange"
+        android:textColor="@color/black"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:textSize="15dp"
+         />
+    <TextView
+        android:id="@+id/rule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:padding="10dp"
+        android:textSize="15dp"
+        android:textColor="@color/red"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal" />
+    <RadioGroup
+        android:id="@+id/bet_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal">
+
+        <RadioButton
+            android:id="@+id/bet_won"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkButton"
+            android:text="I WON / मैं जीत गया"
+            android:textSize="15dp" />
+        <RadioButton
+            android:id="@+id/bet_lost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:text="I LOST / में हार गया"
+            android:onClick="checkButton"/>
+    </RadioGroup>
+
+    <ImageView
+        android:id="@+id/SS_result"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/uploadimg"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_uploadss"
+        android:text="UPLOAD SCREENSHOT"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/imgnotice"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:textColor="@color/black"/>
+    <Button
+        android:id="@+id/final_res"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/play_btn"
+        android:text="SEND RESULT"
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/white"
+        />
+<!--    <TextView-->
+<!--        android:id="@+id/issuetitle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        android:textSize="15dp"-->
+<!--        android:textColor="@color/black"/>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        android:orientation="horizontal">-->
+<!--        <EditText-->
+<!--            android:id="@+id/issuemsg"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingTop="10dp"-->
+<!--            android:layout_marginLeft="50dp"-->
+<!--            android:background="@drawable/border_style"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:hint="Write Problem/समस्या लिखें"-->
+<!--            android:textColor="#000">-->
+<!--            <requestFocus />-->
+<!--        </EditText>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/send_issue"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:layout_toRightOf="@id/issuemsg"-->
+<!--            android:background="@drawable/my_button"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:text="SEND" />-->
+<!--    </LinearLayout>-->
+
+</LinearLayout>
+</ScrollView>
