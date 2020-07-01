@@ -10,9 +10,11 @@
         android:icon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".HelpActivity"
-           android:parentActivityName=".MainActivity" >
-        </activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".termsandconditionActivity" />
+        <activity
+            android:name=".HelpActivity"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".StartmatchActivity" />
         <activity
             android:name=".SplashActivity"

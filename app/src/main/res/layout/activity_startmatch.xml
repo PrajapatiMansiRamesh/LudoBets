@@ -9,13 +9,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-<RadioButton
+    <RadioGroup
+        android:id="@+id/bet_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+    <RadioButton
         android:id="@+id/cancelbtn"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="Cancel Game/गेम रद्द करें"
+        android:onClick="checkButton"
         android:layout_marginTop="20dp"
         android:textSize="20dp" />
 <TextView
@@ -199,24 +205,19 @@
         android:textColor="@color/red"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal" />
-    <RadioGroup
-        android:id="@+id/bet_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_horizontal">
-
         <RadioButton
             android:id="@+id/bet_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkButton"
+            android:layout_gravity="center_horizontal"
             android:text="I WON / मैं जीत गया"
             android:textSize="15dp" />
         <RadioButton
             android:id="@+id/bet_lost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:textSize="15dp"
             android:text="I LOST / में हार गया"
             android:onClick="checkButton"/>
@@ -258,45 +259,5 @@
         android:layout_gravity="center_horizontal"
         android:textColor="@color/white"
         />
-<!--    <TextView-->
-<!--        android:id="@+id/issuetitle"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_marginBottom="10dp"-->
-<!--        android:layout_gravity="center_horizontal"-->
-<!--        android:textSize="15dp"-->
-<!--        android:textColor="@color/black"/>-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_marginBottom="20dp"-->
-<!--        android:orientation="horizontal">-->
-<!--        <EditText-->
-<!--            android:id="@+id/issuemsg"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:paddingTop="10dp"-->
-<!--            android:layout_marginLeft="50dp"-->
-<!--            android:background="@drawable/border_style"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:hint="Write Problem/समस्या लिखें"-->
-<!--            android:textColor="#000">-->
-<!--            <requestFocus />-->
-<!--        </EditText>-->
-
-<!--        <Button-->
-<!--            android:id="@+id/send_issue"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="5dp"-->
-<!--            android:layout_toRightOf="@id/issuemsg"-->
-<!--            android:background="@drawable/my_button"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:text="SEND" />-->
-<!--    </LinearLayout>-->
-
 </LinearLayout>
 </ScrollView>

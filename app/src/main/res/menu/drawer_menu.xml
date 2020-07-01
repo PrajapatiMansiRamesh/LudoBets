@@ -15,10 +15,15 @@
     </group>
     <group android:id="@+id/grp_wacth">
     <item
+            android:id="@+id/item_c"
+            android:checkable="true"
+            android:icon="@drawable/ic_history"
+            android:title="History" />
+    <item
         android:id="@+id/item_d"
         android:checkable="true"
-        android:icon="@android:drawable/ic_search_category_default"
-        android:title="Search" />
+        android:icon="@drawable/ic_invitation"
+        android:title="Invite a Friend" />
     <item
         android:id="@+id/item_e"
         android:checkable="true"
@@ -28,6 +33,6 @@
     <item
         android:id="@+id/item_f"
         android:checkable="true"
-        android:icon="@drawable/ic_people"
-        android:title="About Us" />
+        android:icon="@drawable/ic_description"
+        android:title="Terms and Condition" />
 </menu>

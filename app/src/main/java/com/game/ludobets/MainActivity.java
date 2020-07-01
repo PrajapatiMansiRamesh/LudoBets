@@ -2,6 +2,9 @@ package com.game.ludobets;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -358,14 +361,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        tvInfo.setText(itemName);
         closeDrawer();
         switch (item.getItemId()){
-            case R.id.item_a: break;
+            case R.id.item_a:{
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("current_user_id",userID);
+                startActivity(intent);
+            } break;
             case R.id.item_b:break;
-            case R.id.item_d: break;
+            case R.id.item_c:break;
+            case R.id.item_d:{
+                AlertDialog.Builder acceptDialog=new AlertDialog.Builder(MainActivity.this);
+                acceptDialog.setTitle("Invite a Friend");
+                acceptDialog.setMessage("Copy the link below and send it to the Friend you want to Invite on WhatsApp.");
+                acceptDialog.setCancelable(true);
+                acceptDialog.setPositiveButton("COPY", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String link="link";
+                        ClipboardManager clipboard=(ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip=ClipData.newPlainText("Code",link);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(MainActivity.this, "Link Copied!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                acceptDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alertDialog=acceptDialog.create();
+                alertDialog.show();
+            } break;
             case R.id.item_e:{
                 Intent intent = new Intent(MainActivity.this, HelpActivity.class);
                 startActivity(intent);
             }break;
-            case R.id.item_f: break;
+            case R.id.item_f: {Intent intent = new Intent(MainActivity.this, termsandconditionActivity.class);
+                startActivity(intent);
+            }break;
 
 
         }

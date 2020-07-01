@@ -61,7 +61,7 @@ public class StartmatchActivity extends AppCompatActivity {
     List<String> challenger_name=new ArrayList<String>();
     List<String> player_name=new ArrayList<String>();
     RadioGroup radioGroup;
-    RadioButton radioButton,cancelbtn;
+    RadioButton radioButton;
     ImageView res_img;
     LinearLayout entercode;
     Uri filePath;
@@ -76,7 +76,6 @@ public class StartmatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startmatch);
         calcelview=findViewById(R.id.cancelview);
-        cancelbtn=findViewById(R.id.cancelbtn);
         yesbtn=findViewById(R.id.yesbtn);
         nobtn=findViewById(R.id.nobtn);
         Cyesbtn=findViewById(R.id.Cyesbtn);
@@ -279,56 +278,6 @@ public class StartmatchActivity extends AppCompatActivity {
         sendresbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cancelbtn.isChecked()){
-                    String complete=cancelbtn.getText().toString();
-                    CollectionReference responseRef = fStore.collection("BetRequest");
-                    responseRef.whereEqualTo("status", "ACCEPTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    challenger_name.add((String)document.getString("Challenger_Name").toString());
-                                    player_name.add((String) document.getString("player_Name").toString());
-                                    final ProgressDialog progressDialog = new ProgressDialog(StartmatchActivity.this);
-                                    progressDialog.setTitle("Uploading Result,wait a few movement.Do Not press Back...");
-                                    progressDialog.show();
-                                    if(challenger_name.contains(current_user))
-                                    {
-                                        Map<Object, String> map = new HashMap<>();
-                                        map.put("status", complete);
-                                        responseRef.document(current_user_id).set(map, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(StartmatchActivity.this, "Your Balance will be Updated, Ater Opponent Result", Toast.LENGTH_SHORT).show();
-                                                    StartmatchActivity.this.finish();
-                                                }
-                                            }
-                                        });
-                                    }
-                                    if(player_name.contains(current_user));
-                                    {
-                                        Map<Object, String> res_map = new HashMap<>();
-                                        res_map.put("status", complete);
-                                        fStore.collection("BetRequest").document(document.getString("userID")).collection("BetResponse").document(current_user_id).set(res_map,SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful())
-                                                {    progressDialog.dismiss();
-                                                    Toast.makeText(StartmatchActivity.this, "Balance Updated", Toast.LENGTH_SHORT).show();
-                                                    StartmatchActivity.this.finish();
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-                else{
                     if(radioGroup.getCheckedRadioButtonId() == -1 && res_img.getDrawable() == null)
                     {
                         Toast.makeText(StartmatchActivity.this, "Please Select Result and Upload Screen Short", Toast.LENGTH_SHORT).show();
@@ -387,7 +336,6 @@ public class StartmatchActivity extends AppCompatActivity {
                         });
                     }
                 }
-            }
         });
 
         yesbtn.setOnClickListener(new View.OnClickListener() {
