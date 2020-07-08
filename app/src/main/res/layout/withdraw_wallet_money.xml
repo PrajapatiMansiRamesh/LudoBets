@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:weightSum="5">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="WITHDRAW BALANCE"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/alike"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"/>
+    <EditText
+        android:id="@+id/amount_wd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:hint="Amount"
+        android:background="@drawable/amount_bg"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+    <EditText
+        android:id="@+id/withdraw_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:hint="Payment Number/UPI ID"
+        android:background="@drawable/amount_bg"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Processing Timing: NIGHT 11:59 PM"
+        android:layout_weight="1"
+        android:textColor="#8A2BE2"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:fontFamily="@font/alike"
+        android:textSize="18dp"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="( Please select the Payment Method )"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:fontFamily="@font/alike"
+        android:textSize="15dp"
+        android:layout_marginTop="10dp"/>
+        <RadioGroup
+            android:id="@+id/withdrow_method"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp">
+                <RadioButton
+                    android:layout_marginLeft="4dp"
+                    android:id="@+id/Paytm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/paytm_logo" />
+            <RadioButton
+                android:id="@+id/Googlepay"
+                android:layout_width="wrap_content"
+                android:paddingLeft="5dp"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/gpay_logo" />
+
+            <RadioButton
+                android:id="@+id/Upi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-225dp"
+                android:layout_marginTop="40dp"
+                android:drawableRight="@drawable/upi_logo" />
+             <RadioButton
+                android:id="@+id/Phonepe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:paddingLeft="5dp"
+                 android:layout_marginStart="0dp"
+                 android:layout_marginTop="40dp"
+                android:drawableRight="@drawable/phonepe_logo" />
+        </RadioGroup>
+        <Button
+            android:id="@+id/proceed_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="PROCEED"
+            android:textColor="@color/white"
+            android:background="@color/primary_dark"
+            android:layout_marginBottom="20dp"/>
+</LinearLayout>

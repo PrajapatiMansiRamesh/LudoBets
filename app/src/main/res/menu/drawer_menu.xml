@@ -15,6 +15,16 @@
     </group>
     <group android:id="@+id/grp_wacth">
     <item
+            android:id="@+id/item_g"
+            android:checkable="true"
+            android:icon="@drawable/ic_priority"
+            android:title="How to Use" />
+    <item
+            android:id="@+id/item_i"
+            android:checkable="true"
+            android:icon="@drawable/ic_sad"
+            android:title="Pending Matches" />
+    <item
             android:id="@+id/item_c"
             android:checkable="true"
             android:icon="@drawable/ic_history"
@@ -29,10 +39,15 @@
         android:checkable="true"
         android:icon="@drawable/ic_help"
         android:title="Help" />
-    </group>
     <item
-        android:id="@+id/item_f"
+            android:id="@+id/item_f"
+            android:checkable="true"
+            android:icon="@drawable/ic_description"
+            android:title="Terms and Condition" />
+    </group>
+    <item android:id="@+id/item_h"
         android:checkable="true"
-        android:icon="@drawable/ic_description"
-        android:title="Terms and Condition" />
+        android:icon="@drawable/ic_logout"
+        android:title="Sign Out"
+        />
 </menu>

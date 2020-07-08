@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:weightSum="4">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="ADD BALANCE"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/alike"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"/>
+    <EditText
+        android:id="@+id/amount_et"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:hint="Amount"
+        android:background="@drawable/amount_bg"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp"/>
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:id="@+id/upisend"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_margin="15dp"
+        android:textColor="@color/white"
+        android:background="@drawable/upi_icon"/>
+    <Button
+        android:id="@+id/paytmsend"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp"
+        android:textColor="@color/white"
+        android:background="@drawable/paytm_icon"/>
+
+</LinearLayout>

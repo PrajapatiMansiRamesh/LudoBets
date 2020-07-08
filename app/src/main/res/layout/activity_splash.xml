@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:textColor="#fff"
+        android:textColor="@color/white"
         android:textSize="40sp"
         android:typeface="serif"
         android:layout_height="wrap_content" />

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="10dp"
+    android:layout_gravity="center"
+    tools:context=".WalletActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/viewbalance"
+        android:padding="15dp"
+        android:orientation="vertical"
+        android:background="@drawable/balance_bg">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Available Balance"
+            android:textSize="20dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/alike"/>
+        <TextView
+            android:id="@+id/current_balance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="60dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:fontFamily="@font/alike"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/amount_act"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewbalance"
+        android:weightSum="2"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/add_money"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="+ ADD MONEY"
+            android:background="@color/primary_dark"/>
+        <Button
+            android:id="@+id/withdraw_money"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="- WITHDRAW MONEY"
+            android:textColor="@color/white"
+            android:background="@color/maroon"/>
+    </LinearLayout>
+</RelativeLayout>

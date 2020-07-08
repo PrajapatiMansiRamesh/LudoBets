@@ -114,7 +114,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Admin\Pictures\ludo icon.png" />
+                                      <entry key="imageAsset" value="C:\Users\Admin\Downloads\app_logo.jpeg" />
                                       <entry key="outputName" value="app_logo" />
                                     </map>
                                   </option>
@@ -172,7 +172,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_description_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_play_circle_filled_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -182,8 +182,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_description" />
+                            <entry key="color" value="ff0500" />
+                            <entry key="outputName" value="ic_play" />
                             <entry key="sourceFile" value="C:\Users\Admin\Downloads\history.svg" />
                           </map>
                         </option>

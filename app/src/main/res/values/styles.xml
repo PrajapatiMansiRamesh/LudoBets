@@ -16,7 +16,7 @@
         <item name="colorControlActivated">@color/white</item>
         <item name="colorControlHighlight">@color/white</item>
         <item name="android:textColorHint">@color/iron</item>
-
+        <item name="drawerArrowStyle">@style/DrawerIcon</item>
         <item name="colorButtonNormal">@color/primary_darker</item>
         <item name="android:colorButtonNormal">@color/primary_darker</item>
     </style>
@@ -25,7 +25,10 @@
         <item name="colorAccent">@color/white</item>
         <item name="android:textColorPrimary">@color/iron</item>
         <item name="android:background">@color/primary</item>
+        <item name="drawerArrowStyle">@style/DrawerIcon</item>
     </style>
-
+    <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/primary_dark</item>
+    </style>
 
 </resources>

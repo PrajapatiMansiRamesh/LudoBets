@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d6b41b37-fc49-49ca-a5a7-834109b99821" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../java/com/game/ludobets/HowtouseActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/game/ludobets/WalletActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/amount_bg.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/balance_bg.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/circle_img.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/faq.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradient_background.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ic_priority.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ic_sad.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nav_background.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/play.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rl_background.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wallet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/activity_howtouse.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/activity_wallet.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/game/ludobets/HelpActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/game/ludobets/HelpActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/game/ludobets/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/game/ludobets/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nav_background.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rl_background.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_help.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_help.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_splash.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_splash.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../menu/drawer_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../menu/drawer_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../menu/menu_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../menu/menu_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mipmap-hdpi/app_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mipmap-mdpi/app_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mipmap-xhdpi/app_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mipmap-xxhdpi/app_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mipmap-xxxhdpi/app_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-v21/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-v21/styles.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values/styles.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="ProjectId" id="1eGYBBDTguBP3E9C4mjeIxKVZQl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../../UPI-master" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d6b41b37-fc49-49ca-a5a7-834109b99821" name="Default Changelist" comment="" />
+      <created>1593949258836</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593949258836</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
