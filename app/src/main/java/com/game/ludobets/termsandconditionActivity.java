@@ -33,18 +33,18 @@ public class termsandconditionActivity extends AppCompatActivity {
             }
         });
         description.setText("These terms and conditions of use(\"Terms\") along with privacy policy(\"Privacy Policy\") forms a legally binding agreement(\"Agreement\") between You and Us.");
-        creator.setText("- Creator: Rohit Singh.\n\n" +
+        creator.setText("- Creator: Suraj Verma.\n\n" +
                 "Hence,We insist that You read these Terms and Privacy Policy and let Us kow if you have any questions regarding the same.We will try Our best to answer Your queries.");
         desca.setText("1. Users approve of and accept over Agreement by:\n" +
                 "\n" +
                 "a.Reading all terms and condition\n" +
-                "b reading all rules of this app\n" +
+                "b Reading all rules of this app\n" +
                 "\n" +
                 "2.Users may accept this Agreement only if:\n" +
                 "\n" +
                 "a.If such User is a natural Person,is of the legal age,eligibility and mental capacity to form a binding contract with us.\n" +
                 "b.If such User is a not a resident od Telangana,Assam,Orissa,Kerala,Sikkim,Nagaland or Gujarat.\n" +
-                "c.if such User is a juristic Person, is lawfully existing and has all the authorizations, permits and allowances to enter into this Agreement and form a binding contract.\n" +
+                "c.If such User is a juristic Person, is lawfully existing and has all the authorizations, permits and allowances to enter into this Agreement and form a binding contract.\n" +
                 "d.Such User is not legally barred or restricted from using the App.\n" +
                 "\n" +
                 "3.You Understand that we want You to not use the App if You do not understand, approve of or accept all  the terms specified in this Agreement. Hence,You are requested to read these Terms and Privacy Policy carefully and understand the Agreement before You accept it and agree to be bound by it.\n" +
@@ -64,9 +64,9 @@ public class termsandconditionActivity extends AppCompatActivity {
 
         descc.setText("1. Player who sets a challenge will share a room idlroom code with his/her opponent.\n" +
                 "2. On winning both players have to update there results in following manner:\n" +
-                "(a) if you have won, select Won' option and upload winning screenshot of the game.\n" +
-                "(b) if you have lost, select Lost' option.\n" +
-                "(c) if match is not started and both parties doesn't want to play, select'Cancel' option.\n" +
+                "(a) If you have won, select Won' option and upload winning screenshot of the game.\n" +
+                "(b) If you have lost, select Lost' option.\n" +
+                "(c) If match is not started and both parties doesn't want to play, select'Cancel' option.\n" +
                 "3. Posting a wrong result after game, will charge you a penality  of Rs 50.\n" +
                 "4. User must have to record every game, and if any player is hacking or cheating a game, contact support.\n" +
                 "5. If game is not started, if you haven't played a single move yourself, please show the recording\n" +
@@ -80,7 +80,7 @@ public class termsandconditionActivity extends AppCompatActivity {
                 "5. Once withdrawal is done, you don't have any authority to raise any query.\n" +
                 "6. If withdrawal request go on pending, user must have to wait for 2days.\n");
 
-        desce.setText("Flat 5% commission will be charged on Total Match Amount.");
+        desce.setText("Flat 5% commission will be charged on Total Winning Amount.");
 
     }
 }

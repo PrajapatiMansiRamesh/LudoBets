@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -55,6 +56,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
+import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,309 +75,335 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button set_amount,add_money,withdraw_money,upi_send,paytm_send,proceed_withdraw;
     RadioGroup CheckMethod;
     RadioButton SelectedMethod;
-    ListView bet_list,betresponse_list;
+    ListView bet_list,betresponse_list,historylist;;
     String text_name,checkbalance=null,email;
     Dialog bet_response,wellet_dialog,add_dialog,withdraw_dialog;
     List<String> namesList=new ArrayList<>();
     List<String> responseList=new ArrayList<>();
     List<String> challenger_name=new ArrayList<>();
+    List<String> player_name=new ArrayList<>();
     List<String> userStatus=new ArrayList<>();
+    List<String> playerStatus=new ArrayList<>();
+    List<String> challengerStatus=new ArrayList<>();
     List<String> getAmount=new ArrayList<>();
     FirebaseAuth fAuth=FirebaseAuth.getInstance();
     FirebaseFirestore fStore=FirebaseFirestore.getInstance();
     String userID=fAuth.getCurrentUser().getUid();
     private static MainActivity instance;
     TextView current_balance;
-    String payment_method=null;
+    String payment_method=null,current_challenger,current_player;
+    boolean net=false;
     final int UPI_PAYMENT = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        instance = this;
-        amount=findViewById(R.id.amout);
-        faq=findViewById(R.id.faq);
-        wallet=findViewById(R.id.wallet);
-        set_amount=findViewById(R.id.set_amount);
-        bet_list=findViewById(R.id.bet_list);
-        betnofound=findViewById(R.id.betNoFound);
-        balance=findViewById(R.id.balance);
-        bet_response=new Dialog(this);
-        wellet_dialog=new Dialog(this);
-        add_dialog=new Dialog(this);
-        withdraw_dialog=new Dialog(this);
-        CheckMethod=withdraw_dialog.findViewById(R.id.withdrow_method);
+        checkConnection();
+        if(net==true)
+        {
+            instance = this;
+            amount=findViewById(R.id.amout);
+            faq=findViewById(R.id.faq);
+            wallet=findViewById(R.id.wallet);
+            set_amount=findViewById(R.id.set_amount);
+            bet_list=findViewById(R.id.bet_list);
+            betnofound=findViewById(R.id.betNoFound);
+            historylist=findViewById(R.id.history_list);
+            balance=findViewById(R.id.balance);
+            bet_response=new Dialog(this);
+            wellet_dialog=new Dialog(this);
+            add_dialog=new Dialog(this);
+            withdraw_dialog=new Dialog(this);
+            CheckMethod=withdraw_dialog.findViewById(R.id.withdrow_method);
 //        balance.setText("₹0.00");
-        faq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, HowtouseActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        DocumentReference documentReference=fStore.collection("users").document(userID);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-              text_name=(documentSnapshot.getString("Name")).toString();
-               email=(documentSnapshot.getString("Email")).toString();
-                checkbalance=(String)documentSnapshot.getString("wallet");
-                if(checkbalance!=null)
-                {
-                    balance.setText("₹"+checkbalance+".00");
+            faq.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, HowtouseActivity.class);
+                    startActivity(intent);
                 }
-                else
-                {
-                    balance.setText("₹0.00");
-                }
-            }
-        });
+            });
 
-        wallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            DocumentReference documentReference=fStore.collection("users").document(userID);
+            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    text_name=(documentSnapshot.getString("Name")).toString();
+                    email=(documentSnapshot.getString("Email")).toString();
+                    checkbalance=(String)documentSnapshot.getString("wallet");
+                    if(checkbalance!=null)
+                    {
+                        balance.setText("₹"+checkbalance+".00");
+                    }
+                    else
+                    {
+                        balance.setText("₹0.00");
+                    }
+                }
+            });
+
+            wallet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                Intent intent = new Intent(MainActivity.this, WalletActivity.class);
 //                intent.putExtra("current_user_name",text_name);
 //                intent.putExtra("current_user_email",email);
 //                intent.putExtra("current_user_id",userID);
 //                startActivity(intent);
-                wellet_dialog.setContentView(R.layout.activity_wallet);
-                current_balance=wellet_dialog.findViewById(R.id.current_balance);
-                add_money=wellet_dialog.findViewById(R.id.add_money);
-                withdraw_money=wellet_dialog.findViewById(R.id.withdraw_money);
-                FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-                CollectionReference requestRef = fStore.collection("users");
-                requestRef.whereEqualTo("Email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                checkbalance=(String)document.getString("wallet");
-                                if(checkbalance!=null)
-                                {
-                                    current_balance.setText("₹"+checkbalance+".00");
-                                }
-                                else
-                                {
-                                    current_balance.setText("₹0.00");
+                    wellet_dialog.setContentView(R.layout.activity_wallet);
+                    current_balance=wellet_dialog.findViewById(R.id.current_balance);
+                    add_money=wellet_dialog.findViewById(R.id.add_money);
+                    withdraw_money=wellet_dialog.findViewById(R.id.withdraw_money);
+                    FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+                    CollectionReference requestRef = fStore.collection("users");
+                    requestRef.whereEqualTo("Email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    checkbalance=(String)document.getString("wallet");
+                                    if(checkbalance!=null)
+                                    {
+                                        current_balance.setText("₹"+checkbalance+".00");
+                                    }
+                                    else
+                                    {
+                                        current_balance.setText("₹0.00");
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-                add_money.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        wellet_dialog.dismiss();
-                        add_dialog.setContentView(R.layout.add_wallet_money);
-                        wallet_amount=add_dialog.findViewById(R.id.amount_et);
-                        upi_send=add_dialog.findViewById(R.id.upisend);
-                        paytm_send=add_dialog.findViewById(R.id.paytmsend);
-                        upi_send.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                //Getting the values from the EditTexts
-                                String amount = wallet_amount.getText().toString();
-                                if(amount.isEmpty())
-                                {
-                                    Toast.makeText(MainActivity.this,"Please Add Amount First",Toast.LENGTH_SHORT).show();
-                                }
-                                else
-                                {
-                                    String name = text_name;
-                                    String upiId = "8295350656@paytm";
-                                    payUsingUpi(amount,name,upiId);
-                                }
-                            }
-                        });
-                        add_dialog.show();
-                    }
-                });
-
-
-
-                withdraw_money.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        wellet_dialog.dismiss();
-                        withdraw_dialog.setContentView(R.layout.withdraw_wallet_money);
-                        withdraw_price=withdraw_dialog.findViewById(R.id.amount_wd);
-                        withdraw_id=withdraw_dialog.findViewById(R.id.withdraw_id);
-                        CheckMethod=withdraw_dialog.findViewById(R.id.withdrow_method);
-                        CheckMethod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-                            @Override
-                            public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
-                                switch(radioButtonID) {
-                                    case R.id.Paytm:
-                                        payment_method="Paytm";
-//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case R.id.Googlepay:
-                                        payment_method="Google Pay";
-//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method , Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case R.id.Upi:
-                                        payment_method="UPI";
-//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
-                                        break;
-                                    case R.id.Phonepe:
-                                        payment_method="Phone Pe";
-//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
-                                        break;
-
-                                }
-                            }
-                        });
-                        proceed_withdraw=withdraw_dialog.findViewById(R.id.proceed_withdraw);
-                        proceed_withdraw.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String WithdrawAmount = withdraw_price.getText().toString();
-                                String WithdrawId=withdraw_id.getText().toString();
-                                if(WithdrawAmount.isEmpty())
-                                {
-                                    Toast.makeText(MainActivity.this,"Please Enter Amount First.",Toast.LENGTH_SHORT).show();
-                                }
-                                else
-                                {
-                                    if(WithdrawId.isEmpty())
+                    });
+                    add_money.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            wellet_dialog.dismiss();
+                            add_dialog.setContentView(R.layout.add_wallet_money);
+                            wallet_amount=add_dialog.findViewById(R.id.amount_et);
+                            upi_send=add_dialog.findViewById(R.id.upisend);
+                            paytm_send=add_dialog.findViewById(R.id.paytmsend);
+                            upi_send.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //Getting the values from the EditTexts
+                                    String amount = wallet_amount.getText().toString();
+                                    if(amount.isEmpty())
                                     {
-                                        Toast.makeText(MainActivity.this,"Please Enter Payment or UPI ID.",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this,"Please Add Amount First",Toast.LENGTH_SHORT).show();
                                     }
                                     else
-                                     {   if(CheckMethod.getCheckedRadioButtonId()== -1 || payment_method==null)
-                                         {
-                                             Toast.makeText(MainActivity.this,"Please Select Payment Method.",Toast.LENGTH_SHORT).show();
-                                         }
-                                         else
-                                         {      int current_wihdraw=Integer.parseInt(WithdrawAmount);
-                                                int current_balance=Integer.parseInt(checkbalance);
-                                             if(current_wihdraw<=current_balance)
-                                             {
-                                                 Map<String,Object> instwithdraw=new HashMap<>();
-                                                 instwithdraw.put("UserName",text_name);
-                                                 instwithdraw.put("UserId",userID);
-                                                 instwithdraw.put("WithdrawAmount",WithdrawAmount);
-                                                 instwithdraw.put("PaymentId",WithdrawId);
-                                                 instwithdraw.put("PaymentMethod",payment_method);
-                                                 instwithdraw.put("Time", new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
-                                                 instwithdraw.put("status","NA");
-                                                 fStore.collection("Withdraw").document(userID).set(instwithdraw).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                     @Override
-                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                         if(task.isSuccessful())
-                                                         {
-                                                             Toast.makeText(MainActivity.this,"Withdraw Request Sent",Toast.LENGTH_SHORT).show();
-                                                             CollectionReference requestRef = fStore.collection("users");
-                                                             requestRef.whereEqualTo("Email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                 @Override
-                                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                     if (task.isSuccessful()) {
-                                                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                                 int current_balanceIns=(current_balance - current_wihdraw);
-                                                                                 Map<Object,String> map = new HashMap<>();
-                                                                                 map.put("wallet",Integer.toString(current_balanceIns));
-                                                                                 requestRef.document(document.getId()).set(map, SetOptions.merge());
-                                                                         }
-                                                                     }
-                                                                 }
-                                                             });
-
-                                                         }
-                                                         else {
-                                                             Toast.makeText(MainActivity.this,"Withdraw Request Not Sent",Toast.LENGTH_SHORT).show();
-                                                         }
-                                                     }
-                                                 });
-                                             }
-                                             else
-                                             {
-                                                 Toast.makeText(MainActivity.this,"Withdraw Amount Must Less Then Balance.",Toast.LENGTH_SHORT).show();
-                                             }
-                                         }
-                                     }
-
-                                }
-                            }
-                        });
-                        withdraw_dialog.show();
-                    }
-                });
-                wellet_dialog.show();
-            }
-        });
-
-
-
-        set_amount.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                String price=amount.getText().toString();
-
-                if(price.isEmpty())
-                {
-                    Toast.makeText(MainActivity.this,"Please Enter Amount!",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    int checknumber=Integer.parseInt(price);
-                    int current_balance=Integer.parseInt(checkbalance);
-                       if(checknumber>=30 && checknumber % 5 == 0 && checknumber<=20000)
-                    {
-                        if(checknumber<current_balance)
-                        {
-                            Map<String,String> map=new HashMap<>();
-                            map.put("Challenger_Name",text_name);
-                            map.put("userID",userID);
-                            map.put("Request message",text_name+" wants to play for "+price);
-                            map.put("amount",price);
-                            map.put("status","NA");
-                            fStore.collection("BetRequest").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful())
                                     {
-                                        DBdata(text_name);
-                                        Toast.makeText(MainActivity.this,"Request Sent",Toast.LENGTH_SHORT).show();
-                                    }
-                                    else {
-                                        Toast.makeText(MainActivity.this,"Request Not Sent",Toast.LENGTH_SHORT).show();
+                                        String name = text_name;
+                                        String upiId = "8295350656@paytm";
+                                        payUsingUpi(amount,name,upiId);
                                     }
                                 }
                             });
+                            add_dialog.show();
                         }
-                        else
+                    });
+
+
+
+                    withdraw_money.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            wellet_dialog.dismiss();
+                            withdraw_dialog.setContentView(R.layout.withdraw_wallet_money);
+                            withdraw_price=withdraw_dialog.findViewById(R.id.amount_wd);
+                            withdraw_id=withdraw_dialog.findViewById(R.id.withdraw_id);
+                            CheckMethod=withdraw_dialog.findViewById(R.id.withdrow_method);
+                            CheckMethod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                                @Override
+                                public void onCheckedChanged(RadioGroup radioGroup, int radioButtonID) {
+                                    switch(radioButtonID) {
+                                        case R.id.Paytm:
+                                            payment_method="Paytm";
+//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case R.id.Googlepay:
+                                            payment_method="Google Pay";
+//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method , Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case R.id.Upi:
+                                            payment_method="UPI";
+//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case R.id.Phonepe:
+                                            payment_method="Phone Pe";
+//                                        Toast.makeText(MainActivity.this, "Selected"+payment_method, Toast.LENGTH_SHORT).show();
+                                            break;
+
+                                    }
+                                }
+                            });
+                            proceed_withdraw=withdraw_dialog.findViewById(R.id.proceed_withdraw);
+                            proceed_withdraw.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String WithdrawAmount = withdraw_price.getText().toString();
+                                    String WithdrawId=withdraw_id.getText().toString();
+                                    if(WithdrawAmount.isEmpty())
+                                    {
+                                        Toast.makeText(MainActivity.this,"Please Enter Amount First.",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        if(WithdrawId.isEmpty())
+                                        {
+                                            Toast.makeText(MainActivity.this,"Please Enter Payment or UPI ID.",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {   if(CheckMethod.getCheckedRadioButtonId()== -1 || payment_method==null)
+                                        {
+                                            Toast.makeText(MainActivity.this,"Please Select Payment Method.",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                        {      int current_wihdraw=Integer.parseInt(WithdrawAmount);
+                                            int current_balance=Integer.parseInt(checkbalance);
+                                            if(current_wihdraw<=current_balance)
+                                            {
+                                                Map<String,Object> instwithdraw=new HashMap<>();
+                                                instwithdraw.put("UserName",text_name);
+                                                instwithdraw.put("UserId",userID);
+                                                instwithdraw.put("WithdrawAmount",WithdrawAmount);
+                                                instwithdraw.put("PaymentId",WithdrawId);
+                                                instwithdraw.put("PaymentMethod",payment_method);
+                                                instwithdraw.put("Time", new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                                                instwithdraw.put("status","NA");
+                                                fStore.collection("Withdraw").document(userID).set(instwithdraw).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful())
+                                                        {
+                                                            Toast.makeText(MainActivity.this,"Withdraw Request Sent",Toast.LENGTH_SHORT).show();
+                                                            CollectionReference requestRef = fStore.collection("users");
+                                                            requestRef.whereEqualTo("Email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                            int current_balanceIns=(current_balance - current_wihdraw);
+                                                                            Map<Object,String> map = new HashMap<>();
+                                                                            map.put("wallet",Integer.toString(current_balanceIns));
+                                                                            requestRef.document(document.getId()).set(map, SetOptions.merge());
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        else {
+                                                            Toast.makeText(MainActivity.this,"Withdraw Request Not Sent",Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(MainActivity.this,"Withdraw Amount Must Less Then Balance.",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        }
+
+                                    }
+                                }
+                            });
+                            withdraw_dialog.show();
+                        }
+                    });
+                    wellet_dialog.show();
+                }
+            });
+
+
+
+            set_amount.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    String price=amount.getText().toString();
+
+                    if(price.isEmpty())
+                    {
+                        Toast.makeText(MainActivity.this,"Please Enter Amount!",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        int checknumber=Integer.parseInt(price);
+                        int current_balance=Integer.parseInt(checkbalance);
+                        if(checknumber>=30 && checknumber % 5 == 0 && checknumber<=20000)
                         {
-                            Toast.makeText(MainActivity.this,"You Don't Have Enough Balance To SET Challenge For "+price,Toast.LENGTH_SHORT).show();
+                            if(checknumber<=current_balance)
+                            {
+                                DocumentReference docRef = fStore.collection("BetRequest").document(userID);
+                                docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot snap, @Nullable FirebaseFirestoreException e) {
+                                        if (snap.exists()) {
+//                                        Toast.makeText(MainActivity.this,"Bet Already SET.",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else {
+                                            Map<String,String> map=new HashMap<>();
+                                            map.put("Challenger_Name",text_name);
+                                            map.put("userID",userID);
+                                            map.put("Request message",text_name+" wants to play for "+price);
+                                            map.put("amount",price);
+                                            map.put("status","NA");
+                                            fStore.collection("BetRequest").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful())
+                                                    {
+                                                        DBdata(text_name);
+                                                        Toast.makeText(MainActivity.this,"Request Sent",Toast.LENGTH_SHORT).show();
+                                                        startActivity(getIntent());
+                                                    }
+                                                    else {
+                                                        Toast.makeText(MainActivity.this,"Request Not Sent",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+
+                                        }
+
+                                    }
+                                });
+
+
+                            }
+                            else
+                            {
+                                Toast.makeText(MainActivity.this,"You Don't Have Enough Balance To SET Challenge For "+price,Toast.LENGTH_SHORT).show();
+                            }
+
                         }
-
+                        else{
+                            Toast.makeText(MainActivity.this,"Challenge Must Be Greater Then 30, And Must Be In Multiple Of 5, Don't Start With 0",Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    else{
-                        Toast.makeText(MainActivity.this,"Challenge Must Be Greater Then 30, And Must Be In Multiple Of 5, Don't Start With 0",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                amount.getText().clear();
+                    amount.getText().clear();
                 }
 
-        });
-        DBdata(text_name);
-        Toolbar toolbar=(Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        //phone=findViewById(R.id.profilephone);
-        drawerLayout=findViewById(R.id.drawer_layout);
-        NavigationView navigationView=(NavigationView) findViewById(R.id.drawer);
-        navigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,
-                toolbar,R.string.drawer_open,R.string.drawe_close);
-        drawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.primary_dark));
-        drawerLayout.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+            });
+            DBdata(text_name);
+            Toolbar toolbar=(Toolbar) findViewById(R.id.main_toolbar);
+            setSupportActionBar(toolbar);
+            //phone=findViewById(R.id.profilephone);
+            drawerLayout=findViewById(R.id.drawer_layout);
+            NavigationView navigationView=(NavigationView) findViewById(R.id.drawer);
+            navigationView.setNavigationItemSelectedListener(this);
+            ActionBarDrawerToggle drawerToggle=new ActionBarDrawerToggle(this,drawerLayout,
+                    toolbar,R.string.drawer_open,R.string.drawe_close);
+            drawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.primary_dark));
+            drawerLayout.addDrawerListener(drawerToggle);
+            drawerToggle.syncState();
+
+        }
 
 //        Intent intent = new Intent(this, LoginActivity.class);
 //        startActivity(intent);
+
     }
 
     private void payUsingUpi(String amount, String name, String upiId) {
@@ -470,6 +498,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     int current_balance=Integer. parseInt(checkbalance) + Integer. parseInt(wallet_amount.getText().toString());
                                     Map<Object,String> map = new HashMap<>();
                                     map.put("wallet",Integer.toString(current_balance));
+                                    map.put("new_amount",wallet_amount.getText().toString());
+                                    map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
                                     requestRef.document(document.getId()).set(map, SetOptions.merge());
                                 }
                                 else
@@ -477,9 +507,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     int current_balance=Integer. parseInt(wallet_amount.getText().toString());
                                     Map<Object,String> map = new HashMap<>();
                                     map.put("wallet",Integer.toString(current_balance));
+                                    map.put("new_amount",wallet_amount.getText().toString());
+                                    map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
                                     requestRef.document(document.getId()).set(map, SetOptions.merge());
                                 }
                             }
+
                         }
                     }
                 });
@@ -545,10 +578,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             challenger_name.add(snapshot.getString("Challenger_Name"));
                             userStatus.add(snapshot.getString("status"));
                             getAmount.add(snapshot.getString("amount"));
+                            player_name.add(snapshot.getString("player_Name"));
+                            DocumentReference currentUser=fStore.collection("BetRequest").document(userID);
+                            currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                    if(documentSnapshot.exists())
+                                    {
+                                        current_challenger=documentSnapshot.getString("Challenger_Name");
+                                        current_player=documentSnapshot.getString("player_Name");
+                                        challengerStatus.add(documentSnapshot.getString("Challenger_status"));
+                                        fStore.collection("BetRequest").document(userID).collection("BetResponse").whereEqualTo("player_Name",current_player).get()
+                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                        List<DocumentSnapshot> playerList=queryDocumentSnapshots.getDocuments();
+                                                        for(DocumentSnapshot playerstatus:playerList){
+                                                            playerStatus.add(playerstatus.getString("status"));
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                    else
+                                    {
+                                        fStore.collection("BetRequest").whereEqualTo("player_Name",text_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.isSuccessful())
+                                                {
+                                                    for(QueryDocumentSnapshot info:task.getResult())
+                                                    {
+                                                        current_challenger=info.getString("Challenger_Name").toString();
+                                                        current_player=info.getString("player_Name").toString();
+                                                        String challenger_id=info.getString("userID").toString();
+                                                        fStore.collection("BetRequest").document(challenger_id).collection("BetResponse").whereEqualTo("player_Name",current_player).get()
+                                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                        List<DocumentSnapshot> playerList=queryDocumentSnapshots.getDocuments();
+                                                                        for(DocumentSnapshot playerstatus:playerList){
+                                                                            playerStatus.add(playerstatus.getString("status"));
+                                                                        }
+                                                                    }
+                                                                });
+                                                    }
 
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                         }
-//                        ArrayAdapter<String>adapter =new ArrayAdapter<String>(MainActivity.this,R.layout.betlist_item,R.id.bet_item,namesList);
-//                        getView(bet_list);
                         if(namesList.size()<=0)
                         {
                             betnofound.setVisibility(View.VISIBLE);
@@ -556,7 +637,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         else
                         {
-                            MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name,userStatus,text_name,getAmount,userID);
+                            MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name,userStatus,text_name,getAmount,userID,player_name,playerStatus,current_challenger,current_player,challengerStatus);
                             adapter.notifyDataSetChanged();
                             bet_list.setAdapter(adapter);
                             refresh(1000);
@@ -589,9 +670,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void Show_popup(View v)
     {
+
         bet_response.setContentView(R.layout.betpopup);
-//        Button accept_challengebtn=(Button)bet_response.findViewById(R.id.accept_btn);
-////        TextView bet_response_name=(TextView)bet_response.findViewById(R.id.response_bet);
          betresponse_list=(ListView)bet_response.findViewById(R.id.betresponse_list);
         TextView set_price=(TextView)bet_response.findViewById(R.id.set_price);
         DocumentReference documentReference=fStore.collection("BetRequest").document(userID);
@@ -618,6 +698,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         else
                         {
+                            final MediaPlayer mp=MediaPlayer.create(MainActivity.this,R.raw.btnsound);
+                            mp.start();
                             ResPopupArrayAdapter res_adapter = new ResPopupArrayAdapter(MainActivity.this, responseList,text_name,bet_response);
                             res_adapter.notifyDataSetChanged();
                             betresponse_list.setAdapter(res_adapter);
@@ -719,18 +801,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(id==R.id.action_play){
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=VExoJ0NkR1w&feature=youtu.be")));
             Log.i("Video", "Video Playing...."); }
-//        else if(id==R.id.action_search){  return true;}
+//        else if(id==R.id.action_name){
+//            item.setTitle(text_name); }
 //        else if(id==R.id.action_pay){ return true;
 //        }
-
         return super.onOptionsItemSelected(item);
     }
 
-//    public void logout(View view) {
-//        FirebaseAuth.getInstance().signOut(); //logout to the user
-//        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//        startActivity(intent);
-//    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -823,11 +900,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.menu_main,menu);
         return super.onCreateOptionsMenu(menu);
     }
+    public void checkConnection(){
+        ConnectivityManager manager=(ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork=manager.getActiveNetworkInfo();
+        if(null!=activeNetwork){
+            net=true;
+        }
+        else
+        {
+            AlertDialog.Builder acceptDialog=new AlertDialog.Builder(MainActivity.this);
+            acceptDialog.setTitle("No Internet");
+            acceptDialog.setMessage("Unable to connect to the Internet.Please check your Connection.");
+            acceptDialog.setCancelable(true);
+            acceptDialog.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-//    public void checkMethod_radio(View v) {
-//        int radioId = CheckMethod.getCheckedRadioButtonId();
-//        SelectedMethod = withdraw_dialog.findViewById(radioId);
-//        Toast.makeText(MainActivity.this, "Selected Button" + SelectedMethod.getId(), Toast.LENGTH_SHORT).show();
-//    }
+                    finish();
+                    startActivity(getIntent());
 
+                }
+            });
+            AlertDialog alertDialog=acceptDialog.create();
+            alertDialog.show();
+        }
+    }
 }

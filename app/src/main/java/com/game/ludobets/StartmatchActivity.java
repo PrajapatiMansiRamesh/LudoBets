@@ -1,6 +1,7 @@
 package com.game.ludobets;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,7 +36,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -45,9 +49,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,6 +67,12 @@ public class StartmatchActivity extends AppCompatActivity {
     String price,current_user;
     List<String> challenger_name=new ArrayList<String>();
     List<String> player_name=new ArrayList<String>();
+    List<String> challenger_status=new ArrayList<String>();
+    List<String> player_status=new ArrayList<String>();
+    String challenger_statusid=null;
+    String player_statusid=null;
+    String challenger_statusname=null;
+    String player_statusname=null;
     RadioGroup radioGroup;
     RadioButton radioButton;
     ImageView res_img;
@@ -269,8 +282,14 @@ public class StartmatchActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    chooseImage();
-                    uploadImage(current_user_id);
+                    int radioId = radioGroup.getCheckedRadioButtonId();
+                    radioButton = findViewById(radioId);
+                    String complete=radioButton.getText().toString();
+                    if(complete.equals("I WON / मैं जीत गया"))
+                    {
+                        chooseImage();
+                        uploadImage(current_user_id);
+                    }
                 }
             }
         });
@@ -278,62 +297,215 @@ public class StartmatchActivity extends AppCompatActivity {
         sendresbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if(radioGroup.getCheckedRadioButtonId() == -1 && res_img.getDrawable() == null)
+                    if(radioGroup.getCheckedRadioButtonId() == -1)
                     {
-                        Toast.makeText(StartmatchActivity.this, "Please Select Result and Upload Screen Short", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StartmatchActivity.this, "Please Select Result", Toast.LENGTH_SHORT).show();
                     }
-                    else{
+                    else
+                    {
                         int radioId = radioGroup.getCheckedRadioButtonId();
                         radioButton = findViewById(radioId);
-                        String complete=radioButton.getText().toString();
-                        CollectionReference responseRef = fStore.collection("BetRequest");
-                        responseRef.whereEqualTo("status", "ACCEPTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        challenger_name.add((String)document.getString("Challenger_Name").toString());
-                                        player_name.add((String) document.getString("player_Name").toString());
-                                        final ProgressDialog progressDialog = new ProgressDialog(StartmatchActivity.this);
-                                        progressDialog.setTitle("Uploading Result,wait a few movement.Do Not press Back...");
-                                        progressDialog.show();
-                                        if(challenger_name.contains(current_user))
-                                        {
-                                            Map<Object, String> map = new HashMap<>();
-                                            map.put("status", complete);
-                                            responseRef.document(document.getId()).set(map, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful())
-                                                    {
-                                                        progressDialog.dismiss();
-                                                        Toast.makeText(StartmatchActivity.this, "Your Balance will be Updated, Ater Opponent Result", Toast.LENGTH_SHORT).show();
-                                                        StartmatchActivity.this.finish();
+                        String complete = radioButton.getText().toString();
+                        if (complete.equals("I WON / मैं जीत गया") && res_img.getDrawable() == null) {
+                            Toast.makeText(StartmatchActivity.this, "Please Upload Screen Short", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                         {
+                            CollectionReference responseRef = fStore.collection("BetRequest");
+                            responseRef.whereEqualTo("status", "ACCEPTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            challenger_name.add((String) document.getString("Challenger_Name").toString());
+                                            player_name.add((String) document.getString("player_Name").toString());
+                                            String challenger_id = document.getString("userID").toString();
+                                            final ProgressDialog progressDialog = new ProgressDialog(StartmatchActivity.this);
+                                            progressDialog.setTitle("Uploading Result,wait a few movement.Do Not press Back...");
+                                            progressDialog.show();
+                                            if(challenger_name.contains(current_user))
+                                            {
+
+                                                Map<Object, String> map = new HashMap<>();
+                                                map.put("Challenger_status", complete);
+                                                map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                                                responseRef.document(document.getId()).set(map, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful())
+                                                        {
+                                                            progressDialog.dismiss();
+                                                            Toast.makeText(StartmatchActivity.this, "Balance Updated", Toast.LENGTH_SHORT).show();
+                                                            StartmatchActivity.this.finish();
+                                                        }
                                                     }
-                                                }
-                                            });
-                                        }
-                                        if(player_name.contains(current_user));
-                                        {
-                                            Map<Object, String> res_map = new HashMap<>();
-                                            res_map.put("status", complete);
-                                            fStore.collection("BetRequest").document(document.getString("userID")).collection("BetResponse").document(current_user_id).set(res_map,SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful())
-                                                    {    progressDialog.dismiss();
-                                                        Toast.makeText(StartmatchActivity.this, "Balance Updated", Toast.LENGTH_SHORT).show();
-                                                        StartmatchActivity.this.finish();
+                                                });
+                                            }
+                                            if(player_name.contains(current_user))
+                                            {
+                                                Map<Object, String> res_map = new HashMap<>();
+                                                res_map.put("status", complete);
+                                                res_map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                                                fStore.collection("BetRequest").document(document.getString("userID")).collection("BetResponse").document(current_user_id).set(res_map,SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful())
+                                                        {
+                                                            progressDialog.dismiss();
+                                                            Toast.makeText(StartmatchActivity.this, "Your Balance will be Updated, Ater Opponent Result", Toast.LENGTH_SHORT).show();
+                                                            StartmatchActivity.this.finish();
+                                                        }
                                                     }
-                                                    else {
-                                                    }
-                                                }
-                                            });
+                                                });
+                                            }
                                         }
                                     }
                                 }
+                            });
+
+                            if(challenger_name.contains(current_user))
+                            {
+                                DocumentReference documentReference=fStore.collection("BetRequest").document(current_user_id);
+                                documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                        challenger_status.add((String)documentSnapshot.getString("Challenger_status"));
+                                        challenger_statusid=(String)documentSnapshot.getString("userID").toString();
+                                        challenger_statusname=documentSnapshot.getString("Challenger_Name").toString();
+                                        player_statusname=documentSnapshot.getString("player_Name").toString();
+                                        int bet_amount=Integer.parseInt(documentSnapshot.getString("amount"));
+                                        String player=documentSnapshot.getString("player_Name").toString();
+                                        CollectionReference player_coltn=documentReference.collection("BetResponse");
+                                        player_coltn.whereEqualTo("player_Name",player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.isSuccessful())
+                                                {
+                                                    for(QueryDocumentSnapshot statusdoc:task.getResult())
+                                                    {
+                                                        player_statusid=(String)statusdoc.getString("userID").toString();
+                                                        player_status.add((String)statusdoc.getString("status"));
+                                                        player_statusname=(String)statusdoc.getString("player_Name").toString();
+                                                    }
+
+                                                    if(challenger_status.contains("I WON / मैं जीत गया") && player_status.contains("I LOST / में हार गया"))
+                                                    {
+                                                        DocumentReference docRef = fStore.collection("Comission").document(challenger_statusid.toString());
+                                                        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e)
+                                                            {
+                                                                int com_amount =bet_amount*10/100;
+                                                                Map<String,Object> map=new HashMap<>();
+                                                                map.put("userID",challenger_statusid.toString());
+                                                                map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                                                                map.put("amount",com_amount);
+                                                                docRef.set(map);
+
+                                                                CollectionReference challenger_won = fStore.collection("users");
+                                                                challenger_won.whereEqualTo("Name", challenger_statusname).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                int checkbalance=Integer.parseInt(document.getString("wallet"));
+                                                                                int current_balance=(checkbalance + ((bet_amount+bet_amount)-com_amount));
+                                                                                Map<Object,String> map = new HashMap<>();
+                                                                                map.put("wallet",Integer.toString(current_balance));
+                                                                                challenger_won.document(document.getId()).set(map, SetOptions.merge());
+                                                                            }
+                                                                            CollectionReference changestatus = fStore.collection("BetRequest");
+                                                                            changestatus.whereEqualTo("Challenger_Name",challenger_statusname).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful()) {
+                                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                            Map<Object, String> map = new HashMap<>();
+                                                                                            map.put("status", "COMPLETED");
+                                                                                            changestatus.document(document.getId()).set(map, SetOptions.merge());
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+
+                                                    }
+                                                    else if(challenger_status.contains("I LOST / में हार गया") && player_status.contains("I WON / मैं जीत गया"))
+                                                    {
+                                                        DocumentReference docRef = fStore.collection("Comission").document(player_statusid.toString());
+                                                        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e)
+                                                            {
+                                                                int com_amount =bet_amount*10/100;
+                                                                Map<String,Object> map=new HashMap<>();
+                                                                map.put("userID",player_statusid.toString());
+                                                                map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                                                                map.put("amount",com_amount);
+                                                                docRef.set(map);
+
+                                                                CollectionReference player_won = fStore.collection("users");
+                                                                player_won.whereEqualTo("Name", player_statusname).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                int checkbalance=Integer.parseInt(document.getString("wallet"));
+                                                                                int current_balance=(checkbalance + ((bet_amount+bet_amount)-com_amount));
+                                                                                Map<Object,String> map = new HashMap<>();
+                                                                                map.put("wallet",Integer.toString(current_balance));
+                                                                                player_won.document(document.getId()).set(map, SetOptions.merge());
+                                                                            }
+                                                                            CollectionReference changestatus = fStore.collection("BetRequest");
+                                                                            changestatus.whereEqualTo("Challenger_Name",current_user).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                                    if (task.isSuccessful()) {
+                                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                            Map<Object, String> map = new HashMap<>();
+                                                                                            map.put("status", "COMPLETED");
+                                                                                            changestatus.document(document.getId()).set(map, SetOptions.merge());
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                    else if(challenger_status.contains("I WON / मैं जीत गया") && player_status.contains("Cancel Game/गेम रद्द करें"))
+                                                    {
+                                                        Toast.makeText(StartmatchActivity.this, "Show Panding", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else if(challenger_status.contains("Cancel Game/गेम रद्द करें") && player_status.contains("I WON / मैं जीत गया"))
+                                                    {
+                                                        Toast.makeText(StartmatchActivity.this, "Show Panding", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else if(challenger_status.contains("Cancel Game/गेम रद्द करें") && player_status.contains("Cancel Game/गेम रद्द करें"))
+                                                    {
+                                                        Toast.makeText(StartmatchActivity.this, "Show History", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else if(challenger_status.contains("I WON / मैं जीत गया") && player_status.contains("I WON / मैं जीत गया"))
+                                                    {
+                                                        Toast.makeText(StartmatchActivity.this, "Show Panding", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else if(player_status.contains("ACCEPTED"))
+                                                    {
+                                                        Toast.makeText(StartmatchActivity.this, "Wait for Opponent Result", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
                             }
-                        });
+                            }
                     }
                 }
         });
@@ -341,7 +513,8 @@ public class StartmatchActivity extends AppCompatActivity {
         yesbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final MediaPlayer mp=MediaPlayer.create(StartmatchActivity.this,R.raw.btnsound);
+                mp.start();
                 CollectionReference responseRC = fStore.collection("BetRequest");
                 responseRC.whereEqualTo("player_Name", current_user).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -495,7 +668,6 @@ public class StartmatchActivity extends AppCompatActivity {
                                     }
 
                                 });
-
                                 CollectionReference responseRef = fStore.collection("BetRequest");
                                 responseRef.whereEqualTo("RCstatus", "REJECTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -544,7 +716,6 @@ public class StartmatchActivity extends AppCompatActivity {
         msgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                                 if(challenger_name.contains(current_user))
                                 {
                                     CollectionReference userlabel=fStore.collection("BetRequest");
@@ -561,7 +732,7 @@ public class StartmatchActivity extends AppCompatActivity {
                                                             if(task.isSuccessful())
                                                             {
                                                                 for(QueryDocumentSnapshot phonedocument:task.getResult()){
-                                                                    String phoneNo="91"+phonedocument.getString("phone");
+                                                                    String phoneNo="+91"+phonedocument.getString("phone");
 //                                                                    System.out.println("Phone:"+phoneNo);
                                                                     openWhatsApp(phoneNo);
                                                                 }
@@ -590,7 +761,7 @@ public class StartmatchActivity extends AppCompatActivity {
                                                             if(task.isSuccessful())
                                                             {
                                                                 for(QueryDocumentSnapshot phondocument:task.getResult()){
-                                                                    String phoneNo="91"+phondocument.getString("phone");
+                                                                    String phoneNo="+91"+phondocument.getString("phone");
 //                                                                    System.out.println("Phone:"+phoneNo);
                                                                     openWhatsApp(phoneNo);
                                                                 }
@@ -632,7 +803,7 @@ public class StartmatchActivity extends AppCompatActivity {
                                                             if(task.isSuccessful())
                                                             {
                                                                 for(QueryDocumentSnapshot phonedocument:task.getResult()){
-                                                                    String phoneNo="91"+phonedocument.getString("phone");
+                                                                    String phoneNo="+91"+phonedocument.getString("phone");
                                                                     openCall(phoneNo);
                                                                 }
                                                             }
@@ -660,7 +831,7 @@ public class StartmatchActivity extends AppCompatActivity {
                                                             if(task.isSuccessful())
                                                             {
                                                                 for(QueryDocumentSnapshot phonedocument:task.getResult()){
-                                                                    String phoneNo="91"+phonedocument.getString("phone");
+                                                                    String phoneNo="+91"+phonedocument.getString("phone");
                                                                     openCall(phoneNo);
                                                                 }
                                                             }
@@ -702,6 +873,8 @@ public class StartmatchActivity extends AppCompatActivity {
                     msg_text.setBackgroundResource(R.color.red);
                 }
                 else {
+                    final MediaPlayer mp=MediaPlayer.create(StartmatchActivity.this,R.raw.btnsound);
+                    mp.start();
                     msg_text.setText(checkroom + "\nStep 1.Join the Room Code in Ludoking Game.\nStep 2.If Room Code is correct,press Yes.If Room Code is invalid,press No.\n\n" +
                             "## WITHOUT THIS,MATCH WILL BE CONSIDERED FRAUD.\n\nStep 1.Ludoking game में Room Code join हो.\nStep 2.यदि Room Code सही हे,तो Yes पर दबाये" +
                             "\n\n## इसके बिना, मैच स्वीकार नहीं किया जाएगा\n");
@@ -814,7 +987,17 @@ public class StartmatchActivity extends AppCompatActivity {
     public void checkButton(View v) {
         int radioId = radioGroup.getCheckedRadioButtonId();
         radioButton = findViewById(radioId);
-        Toast.makeText(this, "Selected Button" + radioButton.getText(), Toast.LENGTH_SHORT).show();
+        if(radioButton.getText().equals("I WON / मैं जीत गया"))
+        {
+            uploadimgbtn.setVisibility(View.VISIBLE);
+            img_notice.setVisibility(View.VISIBLE);
+        }
+        else if(radioButton.getText().equals("I LOST / में हार गया"))
+        {
+            uploadimgbtn.setVisibility(View.GONE);
+            img_notice.setVisibility(View.GONE);
+        }
+//        Toast.makeText(this, "Selected Button" + radioButton.getText(), Toast.LENGTH_SHORT).show();
     }
 
     public void openWhatsApp(String phoneNo){

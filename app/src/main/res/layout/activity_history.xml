@@ -26,6 +26,22 @@
             android:textStyle="bold"
             android:textSize="20dp"
             android:textColor="@color/black" />
+            <ListView
+                android:id="@+id/history_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#000000">
+            </ListView>
+            <TextView
+                android:id="@+id/historyNoFound"
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="No History Available"
+                android:textColor="@android:color/black"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

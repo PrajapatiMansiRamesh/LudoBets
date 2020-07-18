@@ -51,12 +51,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
         // Load an image using Picasso library
         Picasso.with(getApplicationContext())
-                .load("https://img.pngio.com/profile-icon-png-image-free-download-searchpngcom-profile-icon-png-673_673.png")
+                .load("https://icon-library.com/images/android-profile-icon/android-profile-icon-2.jpg")
                 .into(roundedimag);
 
         // Load an image using Glide library
         Glide.with(getApplicationContext())
-                .load("https://img.pngio.com/profile-icon-png-image-free-download-searchpngcom-profile-icon-png-673_673.png")
+                .load("https://icon-library.com/images/android-profile-icon/android-profile-icon-2.jpg")
                 .into(roundedimag);
 
         DocumentReference documentReference=fStore.collection("users").document(current_user_id);

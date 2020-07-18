@@ -236,6 +236,7 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_uploadss"
         android:text="UPLOAD SCREENSHOT"
+        android:visibility="gone"
         android:layout_gravity="center_horizontal"/>
     <TextView
         android:id="@+id/imgnotice"
@@ -245,6 +246,7 @@
         android:layout_margin="10dp"
         android:layout_marginBottom="15dp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:textSize="15dp"
         android:textColor="@color/black"/>
     <Button
