@@ -289,9 +289,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                                             map.put("wallet",Integer.toString(current_balanceIns));
                                                                             requestRef.document(document.getId()).set(map, SetOptions.merge());
                                                                         }
+                                                                        withdraw_dialog.dismiss();
                                                                     }
                                                                 }
                                                             });
+
                                                         }
                                                         else {
                                                             Toast.makeText(MainActivity.this,"Withdraw Request Not Sent",Toast.LENGTH_SHORT).show();
