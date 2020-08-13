@@ -77,44 +77,48 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         TextView textView = (TextView) rowView.findViewById(R.id.bet_item);
         Button buttonView = (Button) rowView.findViewById(R.id.view_bet);
         Button buttonPlay=(Button) rowView.findViewById(R.id.play_bet);
+        Button buttonRequest=(Button)rowView.findViewById(R.id.request_bet);
         Button buttonDelete=(Button)rowView.findViewById(R.id.bet_delete);
-//        Button buttonRequest=(Button)rowView.findViewById(R.id.request_bet);
         textView.setText(values.get(position));
         String s=challenger_name.get(position);
         String p=playerName.get(position);
         String status=userStatus.get(position);
+        Toast.makeText(context,current_player+" player list",Toast.LENGTH_SHORT).show();
 
         if (s.equals(current_user_name) && status.startsWith("NA")) {
             buttonPlay.setVisibility(View.GONE);
+            buttonRequest.setVisibility(View.GONE);
             buttonView.setVisibility(View.VISIBLE);
             buttonDelete.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else if(s!=current_user_name && status.startsWith("NA")){
+            buttonRequest.setVisibility(View.GONE);
+            buttonView.setVisibility(View.GONE);
+            buttonDelete.setVisibility(View.GONE);
+            buttonPlay.setVisibility(View.VISIBLE);
+        }
+        else {
             if (s.equals(current_user_name) && status.startsWith("REQUESTED")) {
                 buttonPlay.setVisibility(View.GONE);
+                buttonRequest.setVisibility(View.GONE);
                 buttonView.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
             }
-            else if(status.startsWith("REQUESTED") && p!=current_user_name)
+            else if(p==current_user_name && status.startsWith("REQUESTED"))
             {
+                buttonPlay.setVisibility(View.GONE);
                 buttonView.setVisibility(View.GONE);
-                buttonDelete.setVisibility(View.GONE);
-                buttonPlay.setVisibility(View.VISIBLE);
+                buttonRequest.setVisibility(View.VISIBLE);
+                buttonDelete.setVisibility(View.VISIBLE);
 
             }
-            else if(status.startsWith("NA") && s !=current_user_name)
+            else if(p!=current_user_name && status.startsWith("REQUESTED"))
             {
                 buttonView.setVisibility(View.GONE);
                 buttonDelete.setVisibility(View.GONE);
+                buttonRequest.setVisibility(View.GONE);
                 buttonPlay.setVisibility(View.VISIBLE);
-            }
-            else if(status.startsWith("REQUESTED"))
-            {
-                buttonView.setVisibility(View.GONE);
-                buttonPlay.setText("REQUESTED");
-                buttonPlay.setTextColor(Color.WHITE);
-                buttonPlay.setBackgroundResource(R.drawable.requestbtn);
-                buttonPlay.setVisibility(View.VISIBLE);
-                buttonDelete.setVisibility(View.VISIBLE);
+
             }
             else if(status.startsWith("COMPLETED"))
             {
@@ -126,6 +130,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         {
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
+            buttonRequest.setVisibility(View.GONE);
             buttonPlay.setText("START");
             buttonPlay.setTextColor(Color.WHITE);
             buttonPlay.setBackgroundResource(R.drawable.startbtn);
@@ -135,17 +140,18 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         {
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
+            buttonRequest.setVisibility(View.GONE);
             buttonPlay.setText("START");
             buttonPlay.setTextColor(Color.WHITE);
             buttonPlay.setBackgroundResource(R.drawable.startbtn);
             buttonPlay.setVisibility(View.VISIBLE);
         }
-        else if(status.startsWith("ACCEPTED"))
-        {
-            buttonView.setVisibility(View.GONE);
-            buttonDelete.setVisibility(View.GONE);
-            buttonPlay.setVisibility(View.VISIBLE);
-        }
+//        else if(status.startsWith("ACCEPTED"))
+//        {
+//            buttonView.setVisibility(View.GONE);
+//            buttonDelete.setVisibility(View.GONE);
+//            buttonPlay.setVisibility(View.VISIBLE);
+//        }
 
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,7 +278,9 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 else if(button_status=="REQUESTED")
                 {
                     Toast.makeText(context,current_user_name+" You Already Requested",Toast.LENGTH_SHORT).show();
-//                    notifyDataSetChanged();
+                    buttonView.setVisibility(View.GONE);
+                    buttonPlay.setVisibility(View.GONE);
+                    buttonRequest.setVisibility(View.VISIBLE);
                 }
                 else
                {    int playamunt=Integer.parseInt(getAmount.get(position).toString());
@@ -292,27 +300,10 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                if(playamunt<current_balance)
                                {
                                    change_status(position);
-                                   CollectionReference requestRef = fStore.collection("BetRequest");
-                                   requestRef.whereEqualTo("status", "REQUESTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                       @Override
-                                       public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                           if (task.isSuccessful()) {
-                                               for (QueryDocumentSnapshot document : task.getResult()) {
-                                                   String cur_status= (String) document.get("status");
-                                                   if(cur_status.startsWith("REQUESTED"))
-                                                   {
-                                                       buttonView.setVisibility(View.GONE);
-                                                       buttonPlay.setText("REQUESTED");
-                                                       buttonPlay.setTextColor(Color.WHITE);
-                                                       buttonPlay.setBackgroundResource(R.drawable.requestbtn);
-                                                       buttonPlay.setVisibility(View.VISIBLE);
-                                                       buttonDelete.setVisibility(View.VISIBLE);
-                                                   }
-                                               }
-                                           }
-                                       }
-                                   });
-                                   MainActivity.getInstance().DBdata(current_user_name);
+                                   buttonView.setVisibility(View.GONE);
+                                   buttonPlay.setVisibility(View.GONE);
+                                   buttonRequest.setVisibility(View.VISIBLE);
+                                   buttonDelete.setVisibility(View.VISIBLE);
                                }
                                else
                                {

@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.util.Log;
@@ -75,7 +77,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button set_amount,add_money,withdraw_money,upi_send,paytm_send,proceed_withdraw;
     RadioGroup CheckMethod;
     RadioButton SelectedMethod;
-    ListView bet_list,betresponse_list,historylist;;
+//    RecyclerView bet_list;
+    private RecyclerView.LayoutManager layoutManager;
+    ListView betresponse_list,historylist;;
+    ListView bet_list;
     String text_name,checkbalance=null,email;
     Dialog bet_response,wellet_dialog,add_dialog,withdraw_dialog;
     List<String> namesList=new ArrayList<>();
@@ -642,6 +647,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name,userStatus,text_name,getAmount,userID,player_name,playerStatus,current_challenger,current_player,challengerStatus);
                             adapter.notifyDataSetChanged();
                             bet_list.setAdapter(adapter);
+//                            MyAdapter myAdapter=new MyAdapter(MainActivity.this,namesList, challenger_name,userStatus,text_name,getAmount,userID,player_name,playerStatus,current_challenger,current_player,challengerStatus);
+//                            bet_list.setAdapter(myAdapter);
+//                            layoutManager = new LinearLayoutManager(MainActivity.this);
+//                            bet_list.setLayoutManager(layoutManager);
                             refresh(1000);
                         }
                     }
@@ -720,15 +729,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void Delete_btn(View v)
-    {
-        View parentRow = (View) v.getParent();
-        bet_list = (ListView) parentRow.getParent();
-        final int position = bet_list.getPositionForView(parentRow);
-        String CurentItemName = (String) bet_list.getItemAtPosition(position);
-//        Toast.makeText(MainActivity.this,"item name"+CurentItemName+" Position: "+position,Toast.LENGTH_SHORT).show();
-        removeItemFromList(position,CurentItemName);
-    }
+//    public void Delete_btn(View v)
+//    {
+//        View parentRow = (View) v.getParent();
+//        bet_list = (ListView) parentRow.getParent();
+//        final int position = bet_list.getPositionForView(parentRow);
+//        String CurentItemName = (String) bet_list.getItemAtPosition(position);
+////        Toast.makeText(MainActivity.this,"item name"+CurentItemName+" Position: "+position,Toast.LENGTH_SHORT).show();
+//        removeItemFromList(position,CurentItemName);
+//    }
 
 
        protected void removeItemFromList(int position,String CurentItemName)

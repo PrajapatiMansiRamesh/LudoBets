@@ -135,8 +135,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/bet_list"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="280dp"-->
+<!--            xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="#000000">-->
+<!--        </androidx.recyclerview.widget.RecyclerView>-->
         <ListView
             android:id="@+id/bet_list"
+            android:scrollbars="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="280dp"

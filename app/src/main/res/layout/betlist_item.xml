@@ -56,6 +56,20 @@
         android:textColor="@color/white"
         android:visibility="gone"
         />
+    <Button
+        android:id="@+id/request_bet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/bet_item"
+        android:background="@drawable/requestbtn"
+        android:text="REQUESTED"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        />
 
     <Button
         android:id="@+id/bet_delete"
