@@ -42,7 +42,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     FirebaseFirestore fStore=FirebaseFirestore.getInstance();
     private final Context context;
     private final List<String> values;
-   private final List<String> challenger_name;
+    private final List<String> challenger_name;
     private final List<String> userStatus;
     private final List<String> playerStatus;
     private final List<String> challengerStatus;
@@ -72,18 +72,19 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.betlist_item, parent, false);
         TextView textView = (TextView) rowView.findViewById(R.id.bet_item);
         Button buttonView = (Button) rowView.findViewById(R.id.view_bet);
         Button buttonPlay=(Button) rowView.findViewById(R.id.play_bet);
         Button buttonRequest=(Button)rowView.findViewById(R.id.request_bet);
         Button buttonDelete=(Button)rowView.findViewById(R.id.bet_delete);
+        Button buttonAccept=(Button)rowView.findViewById(R.id.accept_bet);
         textView.setText(values.get(position));
         String s=challenger_name.get(position);
-        String p=playerName.get(position);
+        //  String p=playerName.get(position);
         String status=userStatus.get(position);
-        Toast.makeText(context,current_player+" player list",Toast.LENGTH_SHORT).show();
+        // Toast.makeText(context,current_player+" player list",Toast.LENGTH_SHORT).show();
 
         if (s.equals(current_user_name) && status.startsWith("NA")) {
             buttonPlay.setVisibility(View.GONE);
@@ -104,7 +105,12 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 buttonView.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
             }
-            else if(p==current_user_name && status.startsWith("REQUESTED"))
+            else if(status.startsWith("COMPLETED"))
+            {
+                textView.setVisibility(View.GONE);
+                buttonDelete.setVisibility(View.GONE);
+            }
+            else if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED"))
             {
                 buttonPlay.setVisibility(View.GONE);
                 buttonView.setVisibility(View.GONE);
@@ -112,7 +118,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 buttonDelete.setVisibility(View.VISIBLE);
 
             }
-            else if(p!=current_user_name && status.startsWith("REQUESTED"))
+            else
             {
                 buttonView.setVisibility(View.GONE);
                 buttonDelete.setVisibility(View.GONE);
@@ -120,32 +126,25 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 buttonPlay.setVisibility(View.VISIBLE);
 
             }
-            else if(status.startsWith("COMPLETED"))
-            {
-                textView.setVisibility(View.GONE);
-                buttonDelete.setVisibility(View.GONE);
-            }
+
         }
         if(status.startsWith("ACCEPTED") && s.equals(current_user_name))
         {
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
             buttonRequest.setVisibility(View.GONE);
-            buttonPlay.setText("START");
-            buttonPlay.setTextColor(Color.WHITE);
-            buttonPlay.setBackgroundResource(R.drawable.startbtn);
-            buttonPlay.setVisibility(View.VISIBLE);
+            buttonPlay.setVisibility(View.GONE);
+            buttonAccept.setVisibility(View.VISIBLE);
         }
-        else if(status.startsWith("ACCEPTED") && p.equals(current_user_name))
+        else if(status.startsWith("ACCEPTED") && playerName.contains(current_user_name))
         {
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
             buttonRequest.setVisibility(View.GONE);
-            buttonPlay.setText("START");
-            buttonPlay.setTextColor(Color.WHITE);
-            buttonPlay.setBackgroundResource(R.drawable.startbtn);
-            buttonPlay.setVisibility(View.VISIBLE);
+            buttonPlay.setVisibility(View.GONE);
+            buttonAccept.setVisibility(View.VISIBLE);
         }
+
 //        else if(status.startsWith("ACCEPTED"))
 //        {
 //            buttonView.setVisibility(View.GONE);
@@ -153,179 +152,183 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
 //            buttonPlay.setVisibility(View.VISIBLE);
 //        }
 
+        buttonRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,current_user_name+" You Already Requested",Toast.LENGTH_SHORT).show();
+            }
+        });
+        buttonAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(challenger_name.contains(current_user_name))
+                {
+                    if(challengerStatus.contains("I WON / मैं जीत गया") || challengerStatus.contains("I LOST / में हार गया") || challengerStatus.contains("Cancel Game/गेम रद्द करें"))
+                    {
+                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(v.getContext());
+                        acceptDialog.setTitle("Contact "+current_player);
+                        acceptDialog.setMessage("Call "+current_player+" instead of Admin");
+                        acceptDialog.setCancelable(true);
+                        acceptDialog.setPositiveButton("WHATS APP", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CollectionReference msgref=fStore.collection("users");
+                                msgref.whereEqualTo("Name",current_player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            for(QueryDocumentSnapshot phondocument:task.getResult()){
+                                                String phoneNo="+91"+phondocument.getString("phone");
+//                                                                    System.out.println("Phone:"+phoneNo);
+                                                openWhatsApp(phoneNo);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        acceptDialog.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CollectionReference msgref=fStore.collection("users");
+                                msgref.whereEqualTo("Name",current_player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            for(QueryDocumentSnapshot phonedocument:task.getResult()){
+                                                String phoneNo="+91"+phonedocument.getString("phone");
+                                                openCall(phoneNo);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        AlertDialog alertDialog=acceptDialog.create();
+                        alertDialog.show();
+                    }
+                    else
+                    {
+                        MainActivity.getInstance().DBdata(current_user_name);
+                        Intent intent = new Intent(context, StartmatchActivity.class);
+                        intent.putExtra("current_user",current_user_name);
+                        intent.putExtra("current_user_id",userid);
+                        context.startActivity(intent);
+                    }
+
+                }
+                else if(playerName.contains(current_user_name))
+                {
+                    if(playerStatus.contains("I WON / मैं जीत गया") || playerStatus.contains("I LOST / में हार गया") || playerStatus.contains("Cancel Game/गेम रद्द करें"))
+                    {
+                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(v.getContext());
+                        acceptDialog.setTitle("Contact "+current_challenger);
+                        acceptDialog.setMessage("Call "+current_challenger+" instead of Admin");
+                        acceptDialog.setCancelable(true);
+                        acceptDialog.setPositiveButton("WHATS APP", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CollectionReference msgref=fStore.collection("users");
+                                msgref.whereEqualTo("Name",current_challenger).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            for(QueryDocumentSnapshot phondocument:task.getResult()){
+                                                String phoneNo="+91"+phondocument.getString("phone");
+//                                                                    System.out.println("Phone:"+phoneNo);
+                                                openWhatsApp(phoneNo);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        acceptDialog.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CollectionReference msgref=fStore.collection("users");
+                                msgref.whereEqualTo("Name",current_challenger).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            for(QueryDocumentSnapshot phonedocument:task.getResult()){
+                                                String phoneNo="+91"+phonedocument.getString("phone");
+                                                openCall(phoneNo);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        AlertDialog alertDialog=acceptDialog.create();
+                        alertDialog.show();
+                    }
+                    else
+                    {
+                        MainActivity.getInstance().DBdata(current_user_name);
+                        Intent intent = new Intent(context, StartmatchActivity.class);
+                        intent.putExtra("current_user",current_user_name);
+                        intent.putExtra("current_user_id",userid);
+                        context.startActivity(intent);
+                    }
+                }
+            }
+        });
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String button_status=buttonPlay.getText().toString();
-                if(button_status=="START")
-                {
-                        if(challenger_name.contains(current_user_name))
-                        {
-                            if(challengerStatus.contains("I WON / मैं जीत गया") || challengerStatus.contains("I LOST / में हार गया") || challengerStatus.contains("Cancel Game/गेम रद्द करें"))
+                   int playamunt=Integer.parseInt(getAmount.get(position).toString());
+                    DocumentReference documentReference=fStore.collection("users").document(userid);
+                    documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            checkbalance=(String)documentSnapshot.getString("wallet");
+                            if(checkbalance==null)
                             {
-                                AlertDialog.Builder acceptDialog=new AlertDialog.Builder(v.getContext());
-                                acceptDialog.setTitle("Contact "+current_player);
-                                acceptDialog.setMessage("Call "+current_player+" instead of Admin");
-                                acceptDialog.setCancelable(true);
-                                acceptDialog.setPositiveButton("WHATS APP", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CollectionReference msgref=fStore.collection("users");
-                                        msgref.whereEqualTo("Name",current_player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    for(QueryDocumentSnapshot phondocument:task.getResult()){
-                                                        String phoneNo="+91"+phondocument.getString("phone");
-//                                                                    System.out.println("Phone:"+phoneNo);
-                                                        openWhatsApp(phoneNo);
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                                acceptDialog.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CollectionReference msgref=fStore.collection("users");
-                                        msgref.whereEqualTo("Name",current_player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    for(QueryDocumentSnapshot phonedocument:task.getResult()){
-                                                        String phoneNo="+91"+phonedocument.getString("phone");
-                                                        openCall(phoneNo);
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                                AlertDialog alertDialog=acceptDialog.create();
-                                alertDialog.show();
+                                int current_balance=0;
+                                Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
-                                MainActivity.getInstance().DBdata(current_user_name);
-                                Intent intent = new Intent(context, StartmatchActivity.class);
-                                intent.putExtra("current_user",current_user_name);
-                                intent.putExtra("current_user_id",userid);
-                                context.startActivity(intent);
-                            }
+                                int current_balance=Integer.parseInt(checkbalance);
+                                if(playamunt<current_balance)
+                                {
+                                    change_status(position);
+                                    if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED"))
+                                    {
+                                        buttonPlay.setVisibility(View.GONE);
+                                        buttonView.setVisibility(View.GONE);
+                                        buttonRequest.setVisibility(View.VISIBLE);
+                                        buttonDelete.setVisibility(View.VISIBLE);
 
-                        }
-                        else if(playerName.contains(current_user_name))
-                        {
-                            if(playerStatus.contains("I WON / मैं जीत गया") || playerStatus.contains("I LOST / में हार गया") || playerStatus.contains("Cancel Game/गेम रद्द करें"))
-                            {
-                                AlertDialog.Builder acceptDialog=new AlertDialog.Builder(v.getContext());
-                                acceptDialog.setTitle("Contact "+current_challenger);
-                                acceptDialog.setMessage("Call "+current_challenger+" instead of Admin");
-                                acceptDialog.setCancelable(true);
-                                acceptDialog.setPositiveButton("WHATS APP", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CollectionReference msgref=fStore.collection("users");
-                                        msgref.whereEqualTo("Name",current_challenger).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    for(QueryDocumentSnapshot phondocument:task.getResult()){
-                                                        String phoneNo="+91"+phondocument.getString("phone");
-//                                                                    System.out.println("Phone:"+phoneNo);
-                                                        openWhatsApp(phoneNo);
-                                                    }
-                                                }
-                                            }
-                                        });
                                     }
-                                });
-                                acceptDialog.setNegativeButton("CALL", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        CollectionReference msgref=fStore.collection("users");
-                                        msgref.whereEqualTo("Name",current_challenger).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.isSuccessful())
-                                                {
-                                                    for(QueryDocumentSnapshot phonedocument:task.getResult()){
-                                                        String phoneNo="+91"+phonedocument.getString("phone");
-                                                        openCall(phoneNo);
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                                AlertDialog alertDialog=acceptDialog.create();
-                                alertDialog.show();
-                            }
-                            else
-                            {
-                                MainActivity.getInstance().DBdata(current_user_name);
-                                Intent intent = new Intent(context, StartmatchActivity.class);
-                                intent.putExtra("current_user",current_user_name);
-                                intent.putExtra("current_user_id",userid);
-                                context.startActivity(intent);
+
+                                }
+                                else
+                                {
+                                    Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                }
-                else if(button_status=="REQUESTED")
-                {
-                    Toast.makeText(context,current_user_name+" You Already Requested",Toast.LENGTH_SHORT).show();
-                    buttonView.setVisibility(View.GONE);
-                    buttonPlay.setVisibility(View.GONE);
-                    buttonRequest.setVisibility(View.VISIBLE);
-                }
-                else
-               {    int playamunt=Integer.parseInt(getAmount.get(position).toString());
-                   DocumentReference documentReference=fStore.collection("users").document(userid);
-                   documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                       @Override
-                       public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                           checkbalance=(String)documentSnapshot.getString("wallet");
-                           if(checkbalance==null)
-                           {
-                               int current_balance=0;
-                               Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
-                           }
-                           else
-                           {
-                               int current_balance=Integer.parseInt(checkbalance);
-                               if(playamunt<current_balance)
-                               {
-                                   change_status(position);
-                                   buttonView.setVisibility(View.GONE);
-                                   buttonPlay.setVisibility(View.GONE);
-                                   buttonRequest.setVisibility(View.VISIBLE);
-                                   buttonDelete.setVisibility(View.VISIBLE);
-                               }
-                               else
-                               {
-                                   Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
-                               }
-                           }
-                       }
-                   });
-
-               }
+                    });
             }
         });
-      return rowView;
+        return rowView;
     }
 
 
     public void change_status(int position){
+
         CollectionReference requestRef = fStore.collection("BetRequest");
         requestRef.whereEqualTo("Request message", values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String checkStatus=document.getString("status");
                         if(checkStatus.equals("NA"))
@@ -345,6 +348,8 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
                                 {
+
+
                                     Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
                                     MainActivity.getInstance().DBdata(current_user_name);
 //                                    notifyDataSetChanged();
