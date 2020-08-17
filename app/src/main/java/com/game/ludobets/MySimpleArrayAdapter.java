@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +54,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     private final String current_challenger;
     private final String current_player;
     private final String userid;
-    String checkbalance=null;
+    String checkbalance=null,current_player_name;
     public MySimpleArrayAdapter(Context context, List<String> values, List<String> challenger_name, List<String> userStatus, String text_name, List<String> getAmount, String userID, List<String> playerName, List<String> playerStatus, String current_challenger, String current_player, List<String> challengerStatus) {
         super(context, R.layout.betlist_item, values);
         this.context = context;
@@ -116,7 +118,6 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 buttonView.setVisibility(View.GONE);
                 buttonRequest.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
-
             }
             else
             {
@@ -165,15 +166,24 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                 {
                     if(challengerStatus.contains("I WON / मैं जीत गया") || challengerStatus.contains("I LOST / में हार गया") || challengerStatus.contains("Cancel Game/गेम रद्द करें"))
                     {
+                        fStore.collection("BetRequest").whereEqualTo("Challenger_Name",current_user_name).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                List<DocumentSnapshot> snapshotList=queryDocumentSnapshots.getDocuments();
+                                for(DocumentSnapshot snapshot:snapshotList) {
+                                    current_player_name=snapshot.getString("player_Name");
+                                }
+                            }
+                        });
                         AlertDialog.Builder acceptDialog=new AlertDialog.Builder(v.getContext());
-                        acceptDialog.setTitle("Contact "+current_player);
-                        acceptDialog.setMessage("Call "+current_player+" instead of Admin");
+                        acceptDialog.setTitle("Contact "+current_player_name);
+                        acceptDialog.setMessage("Call "+current_player_name+" instead of Admin");
                         acceptDialog.setCancelable(true);
                         acceptDialog.setPositiveButton("WHATS APP", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 CollectionReference msgref=fStore.collection("users");
-                                msgref.whereEqualTo("Name",current_player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                msgref.whereEqualTo("Name",current_player_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if(task.isSuccessful())
@@ -297,15 +307,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                 int current_balance=Integer.parseInt(checkbalance);
                                 if(playamunt<current_balance)
                                 {
-                                    change_status(position);
-                                    if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED"))
-                                    {
-                                        buttonPlay.setVisibility(View.GONE);
-                                        buttonView.setVisibility(View.GONE);
-                                        buttonRequest.setVisibility(View.VISIBLE);
-                                        buttonDelete.setVisibility(View.VISIBLE);
-
-                                    }
+                                    change_status(position,buttonPlay,buttonRequest,buttonDelete,buttonView);
 
                                 }
                                 else
@@ -321,7 +323,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     }
 
 
-    public void change_status(int position){
+    public void change_status(int position, Button buttonview, Button buttonRequest, Button buttonDelete, Button buttonPlay){
 
         CollectionReference requestRef = fStore.collection("BetRequest");
         requestRef.whereEqualTo("Request message", values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -348,11 +350,11 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
                                 {
-
-
+                                        buttonPlay.setVisibility(View.GONE);
+                                        buttonview.setVisibility(View.GONE);
+                                        buttonRequest.setVisibility(View.VISIBLE);
+                                        buttonDelete.setVisibility(View.VISIBLE);
                                     Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
-                                    MainActivity.getInstance().DBdata(current_user_name);
-//                                    notifyDataSetChanged();
                                 }
                                 else {
                                 }
