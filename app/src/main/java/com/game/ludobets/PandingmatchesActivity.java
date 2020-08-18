@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -78,6 +79,8 @@ public class PandingmatchesActivity extends AppCompatActivity {
                             challengerList.add(snapshot.getString("Challenger_Name"));
                             playerList.add(snapshot.getString("player_Name"));
                         }
+                        Log.d("challenger", String.valueOf(challengerList));
+                        Log.d("player", String.valueOf(playerList));
                         if(challengerList.contains(userName))
                         {
                             DocumentReference documentReference=fStore.collection("BetRequest").document(userID);
@@ -86,7 +89,7 @@ public class PandingmatchesActivity extends AppCompatActivity {
                                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                                     cstatusList.add((String) documentSnapshot.getString("Challenger_status"));
                                     amount=(String)documentSnapshot.getString("amount");
-                                    String player = documentSnapshot.getString("player_Name").toString();
+                                    String player = documentSnapshot.getString("player_Name");
                                     CollectionReference player_coltn = documentReference.collection("BetResponse");
                                     player_coltn.whereEqualTo("player_Name", player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override

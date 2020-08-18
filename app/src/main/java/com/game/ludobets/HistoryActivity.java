@@ -118,7 +118,7 @@ public class HistoryActivity extends AppCompatActivity {
                                     cstatusList.add((String) documentSnapshot.getString("Challenger_status"));
                                     amount=(String)documentSnapshot.getString("amount");
                                     historyTime.add((String)documentSnapshot.getString("Time"));
-                                    String player = documentSnapshot.getString("player_Name").toString();
+                                    String player = documentSnapshot.getString("player_Name");
                                     CollectionReference player_coltn = documentReference.collection("BetResponse");
                                     player_coltn.whereEqualTo("player_Name", player).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
