@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -90,25 +91,29 @@ public class ResPopupArrayAdapter extends ArrayAdapter<String> {
                                     }
                                 }
 
-                            });
-                            CollectionReference PStatusChange = fStore.collection("BetRequest").document(userID).collection("BetResponse");
-                            PStatusChange.whereEqualTo("status", "REQUESTED").whereEqualTo("player_Name",values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            }).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            amount=document.getString("amount").toString();
-                                            Map<Object, String> map = new HashMap<>();
-                                            map.put("status", "ACCEPTED");
-                                            PStatusChange.document(document.getId()).set(map, SetOptions.merge());
+                                    CollectionReference PStatusChange = fStore.collection("BetRequest").document(userID).collection("BetResponse");
+                                    PStatusChange.whereEqualTo("status", "REQUESTED").whereEqualTo("player_Name",values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    amount=document.getString("amount").toString();
+                                                    Map<Object, String> map = new HashMap<>();
+                                                    map.put("status", "ACCEPTED");
+                                                    PStatusChange.document(document.getId()).set(map, SetOptions.merge());
+                                                }
+                                                if(!alreadyExecuted) {
+                                                    update_balance(values.get(position),amount);
+                                                    alreadyExecuted = true;
+                                                    context.startActivity(new Intent(context,MainActivity.class));
+                                                }
+                                                acceptclick=true;
+                                            }
                                         }
-                                        if(!alreadyExecuted) {
-                                            update_balance(values.get(position),amount);
-                                            alreadyExecuted = true;
-                                            context.startActivity(new Intent(context,MainActivity.class));
-                                        }
-                                        acceptclick=true;
-                                    }
+                                    });
                                 }
                             });
                             Toast.makeText(v.getContext(),"Accepted. You can Start the Match Now",Toast.LENGTH_SHORT).show();
@@ -159,6 +164,20 @@ public class ResPopupArrayAdapter extends ArrayAdapter<String> {
                                 Map<Object,String> map = new HashMap<>();
                                 map.put("wallet",Integer.toString(current_balanceIns));
                                 challenger_bal_update.document(document.getId()).set(map, SetOptions.merge());
+                            }
+                        }
+                    }
+                });
+                CollectionReference restUserstatus = fStore.collection("BetRequest").document(userID).collection("BetResponse");
+                restUserstatus.whereEqualTo("status", "REQUESTED").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Map<Object, String> map = new HashMap<>();
+                                map.put("status", "DECLINE");
+                                map.put("msg",current_user_name+" VS "+player_name+" for "+amount);
+                                restUserstatus.document(document.getId()).set(map, SetOptions.merge());
                             }
                         }
                     }

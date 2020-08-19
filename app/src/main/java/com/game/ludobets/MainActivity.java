@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<String> playerStatus=new ArrayList<>();
     List<String> challengerStatus=new ArrayList<>();
     List<String> getAmount=new ArrayList<>();
+    List<String> msg=new ArrayList<>();
     FirebaseAuth fAuth=FirebaseAuth.getInstance();
     FirebaseFirestore fStore=FirebaseFirestore.getInstance();
     String userID=fAuth.getCurrentUser().getUid();
@@ -577,76 +578,79 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return instance;
     }
 
-public void DBdata(String text_name){
-    fStore.collection("BetRequest").get()
-            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    List<DocumentSnapshot> snapshotList=queryDocumentSnapshots.getDocuments();
-                    namesList.clear();
-                    for(DocumentSnapshot snapshot:snapshotList){
-                        namesList.add(snapshot.getString("Request message"));
-                        challenger_name.add(snapshot.getString("Challenger_Name"));
-                        userStatus.add(snapshot.getString("status"));
-                        getAmount.add(snapshot.getString("amount"));
-                        challengerStatus.add(snapshot.getString("Challenger_status"));
-                        challenger_player.add(snapshot.getString("player_Name"));
-                        userId1=snapshot.getString("userID");
+    public void DBdata(String text_name){
+        fStore.collection("BetRequest").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<DocumentSnapshot> snapshotList=queryDocumentSnapshots.getDocuments();
+                        namesList.clear();playerStatus.clear();player_name.clear();challenger_name.clear();userStatus.clear();getAmount.clear();challengerStatus.clear();
+                        challenger_player.clear();
+                        for(DocumentSnapshot snapshot:snapshotList){
+                            namesList.add(snapshot.getString("Request message"));
+                            challenger_name.add(snapshot.getString("Challenger_Name"));
+                            userStatus.add(snapshot.getString("status"));
+                            getAmount.add(snapshot.getString("amount"));
+                            challengerStatus.add(snapshot.getString("Challenger_status"));
+                            challenger_player.add(snapshot.getString("player_Name"));
+                            userId1=snapshot.getString("userID");
                             fStore.collection("BetRequest").document(userId1).collection("BetResponse").get().
-                                    addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            List<DocumentSnapshot> snapshotList1 = queryDocumentSnapshots.getDocuments();
-                                            for (DocumentSnapshot snapshot1 : snapshotList1) {
-                                                player_name.add(snapshot1.getString("player_Name"));
-                                                playerStatus.add(snapshot1.getString("status"));
-                                            }
-                                            if(userStatus.contains("ACCEPTED"))
-                                            {
-                                                fStore.collection("BetRequest").whereEqualTo("player_Name",text_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                        if (task.isSuccessful()) {
-                                                            for (QueryDocumentSnapshot info : task.getResult()) {
-                                                                current_challenger = info.getString("Challenger_Name").toString();
-                                                                current_player = info.getString("player_Name").toString();
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document1 : task.getResult()) {
+                                                    player_name.add(document1.getString("player_Name"));
+                                                    playerStatus.add(document1.getString("status"));
+                                                    if (playerStatus.contains("DICLINE")) {
+                                                        msg.add(document1.getString("msg"));
+                                                    }
+                                                }
+                                                if (userStatus.contains("ACCEPTED")) {
+                                                    fStore.collection("BetRequest").whereEqualTo("player_Name", text_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                            if (task.isSuccessful()) {
+                                                                for (QueryDocumentSnapshot info : task.getResult()) {
+                                                                    current_challenger = info.getString("Challenger_Name").toString();
+                                                                    current_player = info.getString("player_Name").toString();
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                });
-                                            }
-                                            if(namesList.size()<=0)
-                                            {
-                                                betnofound.setVisibility(View.VISIBLE);
-                                                bet_list.setVisibility(View.GONE);
-                                            }
-                                            else
-                                            {
-                                                MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name,userStatus,text_name,getAmount,userID,player_name,playerStatus,current_challenger,current_player,challengerStatus);
-                                                adapter.notifyDataSetChanged();
-                                                bet_list.setAdapter(adapter);
+                                                    });
+                                                }
+                                                if (namesList.size() <= 0) {
+                                                    betnofound.setVisibility(View.VISIBLE);
+                                                    bet_list.setVisibility(View.GONE);
+                                                } else {
+                                                    Log.d("playerName", String.valueOf(player_name));
+                                                    MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name, userStatus, text_name, getAmount, userID, player_name, playerStatus, current_challenger, current_player, challengerStatus, challenger_player, msg);
+                                                    adapter.notifyDataSetChanged();
+                                                    bet_list.setAdapter(adapter);
+                                                    refresh(1000,namesList.size());
+                                                }
                                             }
                                         }
                                     });
+                        }
                     }
-                }
 
-            }).addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-        }
-    });
-}
-
+            }
+        });
+    }
 
 
-    public void refresh(int milliseconds){
+
+    public void refresh(int milliseconds, int size){
         final Handler handler = new Handler();
-        if(bet_list.getVisibility()==View.GONE)
+        if(size<=0)
         {
-            bet_list.setVisibility(View.VISIBLE);
-            betnofound.setVisibility(View.GONE);
+            bet_list.setVisibility(View.GONE);
+            betnofound.setVisibility(View.VISIBLE);
         }
         final Runnable runnable=new Runnable() {
             @Override
@@ -718,7 +722,6 @@ public void DBdata(String text_name){
         removeItemFromList(position,CurentItemName);
     }
 
-
     protected void removeItemFromList(int position,String CurentItemName)
     {
         final int deletePosition = position;
@@ -730,40 +733,27 @@ public void DBdata(String text_name){
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
-                    {
-
-                        //delete data from DB
-                        fStore.collection("BetRequest").whereEqualTo("Request message",CurentItemName).get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        WriteBatch batch=fStore.batch();
-                                        List<DocumentSnapshot> snapshotList=queryDocumentSnapshots.getDocuments();
-                                        for(DocumentSnapshot snapshot:snapshotList){
-                                            batch.delete(snapshot.getReference());
-                                        }
-                                        batch.commit()
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        DBdata(text_name);
-                                                        Toast.makeText(MainActivity.this,"Challege Deleted Successfull!",Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(MainActivity.this,"Cannot be Delete",Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-
-                            }
-                        });
-
+                    {   //delete data from DB
+                        if(challenger_name.contains(text_name))
+                        {
+                            fStore.collection("BetRequest").document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    DBdata(text_name);
+                                    Toast.makeText(MainActivity.this,"Challege Deleted Successfull!",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            fStore.collection("BetRequest").document(userId1).collection("BetResponse").document(userID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    DBdata(text_name);
+                                    Toast.makeText(MainActivity.this,"Request Deleted Successfull!",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 })
                 .setNegativeButton("No",new DialogInterface.OnClickListener()
@@ -777,7 +767,6 @@ public void DBdata(String text_name){
         alertDialog.show();
 
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

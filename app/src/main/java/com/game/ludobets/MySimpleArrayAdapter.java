@@ -50,12 +50,14 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     private final List<String> challengerStatus;
     private final List<String> playerName;
     private final List<String> getAmount;
+    private final List<String> challenger_player;
+    private final List<String> msg;
     private final String current_user_name;
     private final String current_challenger;
     private final String current_player;
     private final String userid;
     String checkbalance=null,current_player_name;
-    public MySimpleArrayAdapter(Context context, List<String> values, List<String> challenger_name, List<String> userStatus, String text_name, List<String> getAmount, String userID, List<String> playerName, List<String> playerStatus, String current_challenger, String current_player, List<String> challengerStatus) {
+    public MySimpleArrayAdapter(Context context, List<String> values, List<String> challenger_name, List<String> userStatus, String text_name, List<String> getAmount, String userID, List<String> playerName, List<String> playerStatus, String current_challenger, String current_player, List<String> challengerStatus,List<String> challenger_player,List<String> msg) {
         super(context, R.layout.betlist_item, values);
         this.context = context;
         this.values = values;
@@ -69,6 +71,8 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         this.current_challenger=current_challenger;
         this.current_player=current_player;
         this.challengerStatus=challengerStatus;
+        this.challenger_player=challenger_player;
+        this.msg=msg;
     }
 
     @Override
@@ -86,45 +90,54 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         String s=challenger_name.get(position);
         //  String p=playerName.get(position);
         String status=userStatus.get(position);
-        // Toast.makeText(context,current_player+" player list",Toast.LENGTH_SHORT).show();
+//         Toast.makeText(context,playerName+" player list",Toast.LENGTH_SHORT).show();
 
         if (s.equals(current_user_name) && status.startsWith("NA")) {
             buttonPlay.setVisibility(View.GONE);
             buttonRequest.setVisibility(View.GONE);
             buttonView.setVisibility(View.VISIBLE);
             buttonDelete.setVisibility(View.VISIBLE);
+            Log.d("status", String.valueOf(1));
         }
         else if(s!=current_user_name && status.startsWith("NA")){
             buttonRequest.setVisibility(View.GONE);
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
             buttonPlay.setVisibility(View.VISIBLE);
+            Log.d("status", String.valueOf(2));
         }
         else {
-            if (s.equals(current_user_name) && status.startsWith("REQUESTED")) {
+            if (s.equals(current_user_name) && status.startsWith("REQUESTED") ) {
                 buttonPlay.setVisibility(View.GONE);
                 buttonRequest.setVisibility(View.GONE);
                 buttonView.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
+                Log.d("status", String.valueOf(3));
             }
             else if(status.startsWith("COMPLETED"))
             {
                 textView.setVisibility(View.GONE);
                 buttonDelete.setVisibility(View.GONE);
+                buttonPlay.setVisibility(View.GONE);
+                buttonRequest.setVisibility(View.GONE);
+                buttonView.setVisibility(View.GONE);
+                Log.d("status", String.valueOf(4));
             }
-            else if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED"))
+            if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED"))
             {
                 buttonPlay.setVisibility(View.GONE);
                 buttonView.setVisibility(View.GONE);
                 buttonRequest.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
+                Log.d("status", String.valueOf(5));
             }
-            else
+            else if(!s.equals(current_user_name))
             {
                 buttonView.setVisibility(View.GONE);
                 buttonDelete.setVisibility(View.GONE);
                 buttonRequest.setVisibility(View.GONE);
                 buttonPlay.setVisibility(View.VISIBLE);
+                Log.d("status", String.valueOf(6));
 
             }
 
@@ -136,22 +149,17 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
             buttonRequest.setVisibility(View.GONE);
             buttonPlay.setVisibility(View.GONE);
             buttonAccept.setVisibility(View.VISIBLE);
+            Log.d("status", String.valueOf(7));
         }
-        else if(status.startsWith("ACCEPTED") && playerName.contains(current_user_name))
+        else if(playerName.contains(current_user_name) && playerStatus.contains("ACCEPTED") || playerStatus.contains("I WON / मैं जीत गया") || playerStatus.contains("I LOST / में हार गया") || playerStatus.contains("Cancel Game/गेम रद्द करें"))
         {
             buttonView.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
             buttonRequest.setVisibility(View.GONE);
             buttonPlay.setVisibility(View.GONE);
             buttonAccept.setVisibility(View.VISIBLE);
+            Log.d("status", String.valueOf(8));
         }
-
-//        else if(status.startsWith("ACCEPTED"))
-//        {
-//            buttonView.setVisibility(View.GONE);
-//            buttonDelete.setVisibility(View.GONE);
-//            buttonPlay.setVisibility(View.VISIBLE);
-//        }
 
         buttonRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,32 +299,32 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   int playamunt=Integer.parseInt(getAmount.get(position).toString());
-                    DocumentReference documentReference=fStore.collection("users").document(userid);
-                    documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                            checkbalance=(String)documentSnapshot.getString("wallet");
-                            if(checkbalance==null)
+                int playamunt=Integer.parseInt(getAmount.get(position).toString());
+                DocumentReference documentReference=fStore.collection("users").document(userid);
+                documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        checkbalance=(String)documentSnapshot.getString("wallet");
+                        if(checkbalance==null)
+                        {
+                            int current_balance=0;
+                            Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            int current_balance=Integer.parseInt(checkbalance);
+                            if(playamunt<current_balance)
                             {
-                                int current_balance=0;
-                                Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
+                                change_status(position,buttonPlay,buttonRequest,buttonDelete,buttonView);
+
                             }
                             else
                             {
-                                int current_balance=Integer.parseInt(checkbalance);
-                                if(playamunt<current_balance)
-                                {
-                                    change_status(position,buttonPlay,buttonRequest,buttonDelete,buttonView);
-
-                                }
-                                else
-                                {
-                                    Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(context,"You Don't have Sufficient Balance to make this Match.",Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
+                    }
+                });
             }
         });
         return rowView;
@@ -349,12 +357,47 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
-                                {
+                                {   if(challenger_name.contains(current_user_name))
+                                    {
+                                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
+                                        acceptDialog.setTitle("Alert !");
+                                        acceptDialog.setMessage("Please Complete Bet Challenge First!");
+                                        acceptDialog.setCancelable(true);
+                                        acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+
+                                            }
+                                        });
+                                        AlertDialog alertDialog=acceptDialog.create();
+                                        alertDialog.show();
+                                    }
+                                    else if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED") || playerStatus.contains("ACCEPTED"))
+                                    {
+                                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
+                                        acceptDialog.setTitle("Alert !");
+                                        acceptDialog.setMessage("Please Complete Bet Requested First!");
+                                        acceptDialog.setCancelable(true);
+                                        acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+
+                                            }
+                                        });
+                                        AlertDialog alertDialog=acceptDialog.create();
+                                        alertDialog.show();
+                                    }
+                                    else
+                                    {
                                         buttonPlay.setVisibility(View.GONE);
                                         buttonview.setVisibility(View.GONE);
                                         buttonRequest.setVisibility(View.VISIBLE);
                                         buttonDelete.setVisibility(View.VISIBLE);
-                                    Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }
                                 else {
                                 }

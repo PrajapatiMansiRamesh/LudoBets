@@ -118,7 +118,7 @@ public class StartmatchActivity extends AppCompatActivity {
 
         AlertDialog.Builder acceptDialog=new AlertDialog.Builder(StartmatchActivity.this);
         acceptDialog.setTitle("Alert !");
-        acceptDialog.setMessage("You will lose your Money if:\n 1.You posted Wrong Result.\n 2.You Don't Post Result within 5 min,after the match.\n\n Your Account will also be Blocked.");
+        acceptDialog.setMessage("You will lose your Money if:\n 1.You posted Wrong Result.\n 2.You Don't Post Result within 5 min,after the match.\nYour Account will also be Blocked.\n3.Player has to Submit result First,Before Challenger.");
         acceptDialog.setCancelable(true);
         acceptDialog.setPositiveButton("I UNDERSTAND", new DialogInterface.OnClickListener() {
             @Override
@@ -325,9 +325,9 @@ public class StartmatchActivity extends AppCompatActivity {
                                             progressDialog.show();
                                             if(challenger_name.contains(current_user))
                                             {
-
                                                 Map<Object, String> map = new HashMap<>();
                                                 map.put("Challenger_status", complete);
+                                                map.put("status", "COMPLETED");
                                                 map.put("Time",new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
                                                 responseRef.document(document.getId()).set(map, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
@@ -414,19 +414,6 @@ public class StartmatchActivity extends AppCompatActivity {
                                                                                 map.put("wallet",Integer.toString(current_balance));
                                                                                 challenger_won.document(document.getId()).set(map, SetOptions.merge());
                                                                             }
-                                                                            CollectionReference changestatus = fStore.collection("BetRequest");
-                                                                            changestatus.whereEqualTo("Challenger_Name",challenger_statusname).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                                            Map<Object, String> map = new HashMap<>();
-                                                                                            map.put("status", "COMPLETED");
-                                                                                            changestatus.document(document.getId()).set(map, SetOptions.merge());
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            });
                                                                         }
                                                                     }
                                                                 });
@@ -460,19 +447,6 @@ public class StartmatchActivity extends AppCompatActivity {
                                                                                 map.put("wallet",Integer.toString(current_balance));
                                                                                 player_won.document(document.getId()).set(map, SetOptions.merge());
                                                                             }
-                                                                            CollectionReference changestatus = fStore.collection("BetRequest");
-                                                                            changestatus.whereEqualTo("Challenger_Name",current_user).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                                                            Map<Object, String> map = new HashMap<>();
-                                                                                            map.put("status", "COMPLETED");
-                                                                                            changestatus.document(document.getId()).set(map, SetOptions.merge());
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            });
                                                                         }
                                                                     }
                                                                 });

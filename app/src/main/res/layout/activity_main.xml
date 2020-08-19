@@ -162,7 +162,9 @@
         android:gravity="center"
         android:text="Lets Set Your First Bet"
         android:textColor="@android:color/black"
-        android:visibility="gone" />
+        android:textStyle="bold"
+        android:visibility="gone"
+         />
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/drawer"
