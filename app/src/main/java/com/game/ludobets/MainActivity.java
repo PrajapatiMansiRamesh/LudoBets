@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RadioGroup CheckMethod;
     RadioButton SelectedMethod;
     String userId1,userId2;
+    int CountRes=0;
     //    RecyclerView bet_list;
     private RecyclerView.LayoutManager layoutManager;
     ListView betresponse_list,historylist;;
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         balance.setText("₹0.00");
                     }
                     DBdata(text_name);
+                    automatic_popup();
                 }
             });
 
@@ -412,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+
 //        Intent intent = new Intent(this, LoginActivity.class);
 //        startActivity(intent);
 
@@ -643,8 +646,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-
-
     public void refresh(int milliseconds, int size){
         final Handler handler = new Handler();
         if(size<=0)
@@ -657,11 +658,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void run() {
                 DBdata(text_name);
                 Log.d("Referesh",text_name);
+//                if(challenger_name.contains(text_name) && userStatus.contains("REQUESTED") && )
             }
         };
         handler.postDelayed(runnable,milliseconds);
     }
 
+    public void automatic_popup(){
+        Log.d("currentUser",text_name);
+        fStore.collection("BetRequest").whereEqualTo("Challenger_Name",text_name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String checkChallenger = document.getString("Challenger_Name");
+                        if (checkChallenger.equals(text_name)) {
+                            bet_response.setContentView(R.layout.betpopup);
+                            betresponse_list=(ListView)bet_response.findViewById(R.id.betresponse_list);
+                            TextView set_price=(TextView)bet_response.findViewById(R.id.set_price);
+                            DocumentReference documentReference=fStore.collection("BetRequest").document(userID);
+                            documentReference.addSnapshotListener(MainActivity.this, new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                    {
+                                        set_price.setText("Match Amount: "+documentSnapshot.getString("amount").toString());
+                                    }
+                                }
+                            });
+                            fStore.collection("BetRequest").document(userID).collection("BetResponse").whereEqualTo("status","REQUESTED").get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            List<DocumentSnapshot> snapshotList=queryDocumentSnapshots.getDocuments();
+                                            responseList.clear();
+                                            for(DocumentSnapshot snapshot:snapshotList){
+                                                responseList.add(snapshot.getString("player_Name"));
+                                            }
+                                            if(responseList.size()>0)
+                                            {
+                                                final MediaPlayer mp=MediaPlayer.create(MainActivity.this,R.raw.btnsound);
+                                                mp.start();
+                                                ResPopupArrayAdapter res_adapter = new ResPopupArrayAdapter(MainActivity.this, responseList,text_name,bet_response);
+                                                res_adapter.notifyDataSetChanged();
+                                                betresponse_list.setAdapter(res_adapter);
+                                                bet_response.show();
+                                            }
+
+                                        }
+
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+
+                        }
+                    }
+                }
+            }
+        });
+    }
     public void Show_popup(View v)
     {
 

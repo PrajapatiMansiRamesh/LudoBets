@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,8 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     private final String current_player;
     private final String userid;
     String checkbalance=null,current_player_name;
+    int request_count=0;
+
     public MySimpleArrayAdapter(Context context, List<String> values, List<String> challenger_name, List<String> userStatus, String text_name, List<String> getAmount, String userID, List<String> playerName, List<String> playerStatus, String current_challenger, String current_player, List<String> challengerStatus,List<String> challenger_player,List<String> msg) {
         super(context, R.layout.betlist_item, values);
         this.context = context;
@@ -343,7 +346,8 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                         String checkStatus=document.getString("status");
                         if(checkStatus.equals("NA"))
                         {
-                            Map<Object, String> map = new HashMap<>();
+                            Map<Object, Object> map = new HashMap<>();
+//                            map.put("RequestNo",request_count++);
                             map.put("status", "REQUESTED");
                             requestRef.document(document.getId()).set(map, SetOptions.merge());
                         }
@@ -396,6 +400,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                         buttonRequest.setVisibility(View.VISIBLE);
                                         buttonDelete.setVisibility(View.VISIBLE);
                                         Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
+                                        MainActivity.getInstance().automatic_popup();
                                     }
 
                                 }
