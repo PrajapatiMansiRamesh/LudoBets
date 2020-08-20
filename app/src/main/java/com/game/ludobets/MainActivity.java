@@ -345,7 +345,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     {
                         int checknumber=Integer.parseInt(price);
                         int current_balance=Integer.parseInt(checkbalance);
-                        if(checknumber>=30 && checknumber % 5 == 0 && checknumber<=20000)
+                        if(challenger_name.contains(text_name) && userStatus.contains("REQUESTED") || userStatus.contains("ACCEPTED"))
+                        {
+                            AlertDialog.Builder acceptDialog=new AlertDialog.Builder(MainActivity.this);
+                            acceptDialog.setTitle("Alert !");
+                            acceptDialog.setMessage("Please Complete Bet Requested First!");
+                            acceptDialog.setCancelable(true);
+                            acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            AlertDialog alertDialog=acceptDialog.create();
+                            alertDialog.show();
+                        }
+                        else if(checknumber>=30 && checknumber % 5 == 0 && checknumber<=20000)
                         {
                             if(checknumber<=current_balance)
                             {

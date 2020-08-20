@@ -336,64 +336,64 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
 
     public void change_status(int position, Button buttonview, Button buttonRequest, Button buttonDelete, Button buttonPlay){
 
-        CollectionReference requestRef = fStore.collection("BetRequest");
-        requestRef.whereEqualTo("Request message", values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+        if(challenger_name.contains(current_user_name))
+        {
+            AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
+            acceptDialog.setTitle("Alert !");
+            acceptDialog.setMessage("Please Complete Bet Challenge First!");
+            acceptDialog.setCancelable(true);
+            acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String checkStatus=document.getString("status");
-                        if(checkStatus.equals("NA"))
-                        {
-                            Map<Object, Object> map = new HashMap<>();
+                }
+            });
+            AlertDialog alertDialog=acceptDialog.create();
+            alertDialog.show();
+        }
+        else if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED") || playerStatus.contains("ACCEPTED"))
+        {
+            AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
+            acceptDialog.setTitle("Alert !");
+            acceptDialog.setMessage("Please Complete Bet Requested First!");
+            acceptDialog.setCancelable(true);
+            acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+
+                }
+            });
+            AlertDialog alertDialog=acceptDialog.create();
+            alertDialog.show();
+        }
+        else
+        {
+            CollectionReference requestRef = fStore.collection("BetRequest");
+            requestRef.whereEqualTo("Request message", values.get(position)).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String checkStatus=document.getString("status");
+                            if(checkStatus.equals("NA"))
+                            {
+                                Map<Object, Object> map = new HashMap<>();
 //                            map.put("RequestNo",request_count++);
-                            map.put("status", "REQUESTED");
-                            requestRef.document(document.getId()).set(map, SetOptions.merge());
-                        }
-                        Map<String,String> res_map=new HashMap<>();
-                        res_map.put("player_Name",current_user_name);
-                        res_map.put("userID",userid);
-                        res_map.put("ChallengerID",document.getString("userID"));
-                        res_map.put("amount",getAmount.get(position));
-                        res_map.put("status","REQUESTED");
-                        fStore.collection("BetRequest").document(document.getString("userID")).collection("BetResponse").document(userid).set(res_map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
-                                {   if(challenger_name.contains(current_user_name))
-                                    {
-                                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
-                                        acceptDialog.setTitle("Alert !");
-                                        acceptDialog.setMessage("Please Complete Bet Challenge First!");
-                                        acceptDialog.setCancelable(true);
-                                        acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-
-                                            }
-                                        });
-                                        AlertDialog alertDialog=acceptDialog.create();
-                                        alertDialog.show();
-                                    }
-                                    else if(playerName.contains(current_user_name) && playerStatus.contains("REQUESTED") || playerStatus.contains("ACCEPTED"))
-                                    {
-                                        AlertDialog.Builder acceptDialog=new AlertDialog.Builder(getContext());
-                                        acceptDialog.setTitle("Alert !");
-                                        acceptDialog.setMessage("Please Complete Bet Requested First!");
-                                        acceptDialog.setCancelable(true);
-                                        acceptDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-
-
-                                            }
-                                        });
-                                        AlertDialog alertDialog=acceptDialog.create();
-                                        alertDialog.show();
-                                    }
-                                    else
+                                map.put("status", "REQUESTED");
+                                requestRef.document(document.getId()).set(map, SetOptions.merge());
+                            }
+                            Map<String,String> res_map=new HashMap<>();
+                            res_map.put("player_Name",current_user_name);
+                            res_map.put("userID",userid);
+                            res_map.put("ChallengerID",document.getString("userID"));
+                            res_map.put("amount",getAmount.get(position));
+                            res_map.put("status","REQUESTED");
+                            fStore.collection("BetRequest").document(document.getString("userID")).collection("BetResponse").document(userid).set(res_map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
                                     {
                                         buttonPlay.setVisibility(View.GONE);
                                         buttonview.setVisibility(View.GONE);
@@ -402,16 +402,16 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
                                         Toast.makeText(context,current_user_name+" has been Requested",Toast.LENGTH_SHORT).show();
                                         MainActivity.getInstance().automatic_popup();
                                     }
-
+                                    else {
+                                    }
                                 }
-                                else {
-                                }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     public void openWhatsApp(String phoneNo){
