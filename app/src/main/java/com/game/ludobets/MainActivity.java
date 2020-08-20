@@ -645,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                     MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(MainActivity.this, namesList, challenger_name, userStatus, text_name, getAmount, userID, player_name, playerStatus, current_challenger, current_player, challengerStatus, challenger_player, msg);
                                                     adapter.notifyDataSetChanged();
                                                     bet_list.setAdapter(adapter);
-                                                    refresh(1000,namesList.size());
+                                                    refresh(2000,namesList.size());
                                                 }
                                             }
                                         }

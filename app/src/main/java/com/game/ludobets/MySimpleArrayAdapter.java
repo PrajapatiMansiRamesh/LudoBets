@@ -58,8 +58,7 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
     private final String current_player;
     private final String userid;
     String checkbalance=null,current_player_name;
-    int request_count=0;
-
+    int res_count;
     public MySimpleArrayAdapter(Context context, List<String> values, List<String> challenger_name, List<String> userStatus, String text_name, List<String> getAmount, String userID, List<String> playerName, List<String> playerStatus, String current_challenger, String current_player, List<String> challengerStatus,List<String> challenger_player,List<String> msg) {
         super(context, R.layout.betlist_item, values);
         this.context = context;
@@ -377,10 +376,19 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String checkStatus=document.getString("status");
-                            if(checkStatus.equals("NA"))
+                            String get_rescount=document.getString("RequestNo");
+                            if(get_rescount==null)
+                            {
+                                res_count=1;
+                            }
+                            else
+                            {
+                                res_count=Integer.parseInt(get_rescount)+1;
+                            }
+                            if(checkStatus.equals("NA") || checkStatus.equals("REQUESTED"))
                             {
                                 Map<Object, Object> map = new HashMap<>();
-//                            map.put("RequestNo",request_count++);
+                                map.put("RequestNo",Integer.toString(res_count));
                                 map.put("status", "REQUESTED");
                                 requestRef.document(document.getId()).set(map, SetOptions.merge());
                             }
